@@ -22,9 +22,7 @@
             --error: #f72585;
             --sidebar-width: 260px;
         }
-
         * { box-sizing: border-box; }
-
         body {
             margin: 0;
             padding: 0;
@@ -35,7 +33,6 @@
             display: flex;
             overflow-x: hidden;
         }
-
         .glass {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
@@ -44,7 +41,6 @@
             border-radius: 20px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
-
         /* Sidebar */
         aside {
             width: var(--sidebar-width);
@@ -60,7 +56,6 @@
             z-index: 100;
             transition: all 0.3s ease;
         }
-
         .logo-area {
             padding: 30px;
             display: flex;
@@ -70,7 +65,6 @@
             font-size: 1.4rem;
             color: var(--primary);
         }
-
         .nav-links {
             flex: 1;
             padding: 20px;
@@ -78,7 +72,6 @@
             flex-direction: column;
             gap: 10px;
         }
-
         .nav-item {
             padding: 12px 20px;
             border-radius: 12px;
@@ -90,14 +83,11 @@
             transition: 0.2s;
             cursor: pointer;
         }
-
         .nav-item:hover, .nav-item.active {
             color: var(--text);
             background: rgba(58, 134, 255, 0.15);
         }
-
         .nav-item i { width: 20px; }
-
         /* Main Content */
         main {
             margin-left: var(--sidebar-width);
@@ -107,26 +97,21 @@
             margin-right: auto;
             position: relative;
         }
-
         .content-section {
             display: none;
             animation: fadeIn 0.4s ease;
         }
-
         .content-section.active { display: block; }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 40px;
         }
-
         .branding-title {
             font-size: 0.9rem;
             color: var(--secondary);
@@ -136,30 +121,25 @@
             margin-bottom: 5px;
             display: block;
         }
-
         /* Dashboard Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
         }
-
         .stats-card {
             padding: 25px;
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-
         .stats-title {
             color: var(--text-muted);
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
         .stats-value { font-size: 2.5rem; font-weight: 700; }
-
         /* Topics Section */
         .topics-grid {
             margin-top: 40px;
@@ -167,18 +147,15 @@
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
         }
-
         .topic-card {
             padding: 20px;
             cursor: pointer;
             transition: transform 0.2s;
         }
-
         .topic-card:hover {
             transform: translateY(-5px);
             background: rgba(255, 255, 255, 0.1);
         }
-
         .topic-icon {
             width: 50px;
             height: 50px;
@@ -191,7 +168,6 @@
             font-size: 1.5rem;
             margin-bottom: 15px;
         }
-
         /* Quiz UI Overlay */
         .quiz-overlay {
             position: fixed;
@@ -205,14 +181,12 @@
             justify-content: center;
             align-items: center;
         }
-
         .quiz-card {
             width: 95%;
             max-width: 800px;
             padding: 40px;
             position: relative;
         }
-
         .quiz-progress {
             height: 6px;
             background: rgba(255, 255, 255, 0.1);
@@ -220,27 +194,23 @@
             margin-bottom: 30px;
             overflow: hidden;
         }
-
         .progress-bar {
             height: 100%;
             background: var(--primary);
             width: 0%;
             transition: width 0.3s ease;
         }
-
         .question {
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 30px;
             line-height: 1.4;
         }
-
         .options {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-
         .option {
             padding: 18px 25px;
             border-radius: 15px;
@@ -252,11 +222,9 @@
             align-items: center;
             gap: 15px;
         }
-
         .option:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--primary); }
         .option.correct { background: rgba(76, 201, 240, 0.15); border-color: var(--success); }
         .option.wrong { background: rgba(247, 37, 133, 0.15); border-color: var(--error); }
-
         .close-quiz {
             position: absolute;
             top: 20px;
@@ -265,7 +233,6 @@
             font-size: 1.5rem;
             color: var(--text-muted);
         }
-
         /* AI Buddy Button */
         .ai-buddy-btn {
             position: fixed;
@@ -284,7 +251,6 @@
             z-index: 500;
             transition: 0.3s;
         }
-
         footer {
             margin-top: 60px;
             padding: 40px 0;
@@ -293,7 +259,6 @@
             color: var(--text-muted);
             font-size: 0.9rem;
         }
-
         @media (max-width: 1024px) {
             aside { width: 80px; }
             .logo-area span, .nav-item span { display: none; }
@@ -332,22 +297,23 @@
             </div>
         </nav>
     </aside>
-
     <main>
         <!-- Dashboard -->
         <div id="section-dashboard" class="content-section active">
             <header>
                 <div>
                     <span class="branding-title">World's First AI-Powered MOrth RCS Exam Prep Platform</span>
-                    <h1>Welcome back, Dr. Ajay</h1>
-                    <p style="color: var(--text-muted);">Built by Dr. Ajay Kubavat | AI in Orthodontics</p>
+                    <h1>Welcome back, <b>Dr. Ajay Kubavat</b></h1>
+                    <p style="color: var(--text-muted);">Built by <b>Dr. Ajay Kubavat</b> | AI in Orthodontics</p>
+                    <a href="https://www.linkedin.com/in/dr-ajay-kubavat-708205210" target="_blank" class="glass" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; text-decoration: none; color: var(--secondary); font-size: 0.8rem; margin-top: 10px;">
+                        <i class="fab fa-linkedin"></i> LinkedIn Profile
+                    </a>
                 </div>
                 <div class="glass" style="padding: 10px 20px; border-radius: 30px; display: flex; align-items: center; gap: 10px;">
                     <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700;">AK</div>
                     <span>Authority</span>
                 </div>
             </header>
-
             <div class="dashboard-grid">
                 <div class="stats-card glass">
                     <span class="stats-title">Today's Progress</span>
@@ -359,7 +325,6 @@
                         <p style="color: var(--text-muted); font-size: 0.8rem;">Goal: 20 Questions</p>
                     </div>
                 </div>
-
                 <div class="stats-card glass">
                     <span class="stats-title">Top Performance</span>
                     <div style="margin-top: 10px;">
@@ -375,7 +340,6 @@
                         <div class="quiz-progress"><div class="progress-bar" style="width: 85%;"></div></div>
                     </div>
                 </div>
-
                 <div class="stats-card glass" style="background: linear-gradient(45deg, rgba(58, 134, 255, 0.1), rgba(0, 245, 212, 0.1));">
                     <span class="stats-title">Study Streak</span>
                     <span class="stats-value">12 Days</span>
@@ -383,7 +347,6 @@
                     <button class="glass" style="margin-top: 15px; padding: 12px; cursor: pointer; border: none; color: var(--text); background: var(--primary); border-radius: 12px; font-weight: 600;">View Global Leaderboard</button>
                 </div>
             </div>
-
             <h2 style="margin-top: 40px;">Select a Module</h2>
             <div class="topics-grid">
                 <div class="topic-card glass" onclick="startQuiz('Growth')">
@@ -408,33 +371,76 @@
                 </div>
             </div>
         </div>
-
-        <!-- Other sections (Placeholders) -->
+        <!-- Study Prep Section -->
         <div id="section-study" class="content-section">
             <h2>Study Prep Library</h2>
             <div class="dashboard-grid">
-                <div class="stats-card glass"><h3>SBA Practice</h3><p>Access the full bank of 500+ Single Best Answer questions.</p></div>
-                <div class="stats-card glass"><h3>Mock Exams</h3><p>Timed examinations simulated for RCS standards.</p></div>
+                <div class="topic-card glass" onclick="showSection('dashboard')">
+                    <div class="topic-icon"><i class="fas fa-list-check"></i></div>
+                    <h3>SBA Practice</h3>
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">Access 500+ SBA Questions in the Dashboard</p>
+                </div>
+                <div class="stats-card glass">
+                    <div class="topic-icon"><i class="fas fa-file-medical"></i></div>
+                    <h3>Mock Exams & Cases</h3>
+                    <ul style="list-style: none; padding: 0; color: var(--text-muted);">
+                        <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <b>Case 1:</b> Skeletal Class II Malocclusion with Mandibular Deficiency
+                        </li>
+                        <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <b>Case 2:</b> Management of Impacted Maxillary Canines
+                        </li>
+                        <li style="padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <b>Case 3:</b> Surgical-Orthodontic Treatment of Class III Malocclusion
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
+        <!-- Reference Section -->
         <div id="section-reference" class="content-section">
             <h2>Reference Material</h2>
-            <p>Curated list of orthodontic textbooks and latest research papers.</p>
+            <div class="dashboard-grid">
+                <div class="stats-card glass">
+                    <h3>Academic Profiles</h3>
+                    <ul style="list-style: none; padding: 0; color: var(--text-muted); display: flex; flex-direction: column; gap: 15px;">
+                        <li>
+                            <i class="fab fa-google" style="color: #4285F4; margin-right: 10px;"></i>
+                            <a href="https://scholar.google.com/citations?user=cqgPml4AAAAJ" target="_blank" style="color: var(--primary); text-decoration: none;">Google Scholar Profile</a>
+                        </li>
+                        <li>
+                            <i class="fab fa-researchgate" style="color: #00ccbb; margin-right: 10px;"></i>
+                            <a href="https://researchgate.net/profile/Ajay-Kubavat" target="_blank" style="color: var(--primary); text-decoration: none;">ResearchGate Profile</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-id-card" style="color: var(--secondary); margin-right: 10px;"></i>
+                            <a href="https://orcid.org/0000-0003-2099-9715" target="_blank" style="color: var(--primary); text-decoration: none;">ORCID ID: 0000-0003-2099-9715</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="stats-card glass">
+                    <h3>Essential Textbooks</h3>
+                    <div style="color: var(--text-muted); line-height: 1.6;">
+                        <p>• Contemporary Orthodontics - Proffit</p>
+                        <p>• Orthodontics: Current Principles and Techniques - Graber</p>
+                        <p>• Biomechanics in Orthodontics - Nanda</p>
+                        <p>• Handbook of Orthodontics - Martyn Cobourne</p>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="section-progress" class="content-section">
             <h2>Detailed Progress Analytics</h2>
             <p>AI-driven insights into your strengths and weaknesses.</p>
         </div>
-
         <footer>
-            © 2026 MOrth Buddy | Dr. Ajay Kubavat | Open Source for Orthodontic Excellence
+            © 2026 MOrth Buddy | <b>Dr. Ajay Kubavat</b> | <a href="https://www.linkedin.com/in/dr-ajay-kubavat-708205210" target="_blank" style="color: var(--secondary); text-decoration: none;">Connect on LinkedIn</a>
         </footer>
     </main>
-
     <!-- Quiz Overlay -->
     <div class="quiz-overlay" id="quizOverlay">
         <div class="quiz-card glass">
-            <div class="close-quiz" onclick="closeQuiz()">&times;</div>
+            <div class="close-quiz" onclick="closeQuiz()">×</div>
             <div class="quiz-progress">
                 <div class="progress-bar" id="progressBar" style="width: 10%;"></div>
             </div>
@@ -463,9 +469,7 @@
             </div>
         </div>
     </div>
-
     <div class="ai-buddy-btn" title="Ask Buddy AI"><i class="fas fa-robot"></i></div>
-
     <script>
         // Tab Navigation
         function showSection(sectionId) {
@@ -474,7 +478,6 @@
             document.getElementById('section-' + sectionId).classList.add('active');
             document.getElementById('nav-' + sectionId).classList.add('active');
         }
-
         // Progress Chart
         const ctx = document.getElementById('progressChart').getContext('2d');
         new Chart(ctx, {
@@ -490,15 +493,12 @@
             },
             options: { cutout: '80%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, maintainAspectRatio: false }
         });
-
         function startQuiz(topic) {
             document.getElementById('quizOverlay').style.display = 'flex';
         }
-
         function closeQuiz() {
             document.getElementById('quizOverlay').style.display = 'none';
         }
-
         function checkAnswer(el, isCorrect) {
             if (isCorrect) {
                 el.classList.add('correct');
