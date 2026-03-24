@@ -1,675 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOrth Buddy | AI-Powered RCS Prep</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0a0e1a">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --primary: #3a86ff;
-            --secondary: #00f5d4;
-            --accent: #ff006e;
-            --bg-dark: #0a0e1a;
-            --bg-card: rgba(255, 255, 255, 0.07);
-            --text: #e8f0fe;
-            --text-muted: #94a3b8;
-            --success: #4cc9f0;
-            --error: #f72585;
-            --sidebar-width: 260px;
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #0a0e1a 0%, #1a2744 50%, #0d1b2a 100%);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            overflow-x: hidden;
-        }
-        .glass {
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-        /* Sidebar */
-        aside {
-            width: var(--sidebar-width);
-            height: 100vh;
-            background: rgba(10, 14, 26, 0.8);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 100;
-            transition: all 0.3s ease;
-        }
-        .logo-area {
-            padding: 30px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 700;
-            font-size: 1.4rem;
-            color: var(--primary);
-        }
-        .nav-links {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .nav-item {
-            padding: 12px 20px;
-            border-radius: 12px;
-            color: var(--text-muted);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-        .nav-item:hover, .nav-item.active {
-            color: var(--text);
-            background: rgba(58, 134, 255, 0.15);
-        }
-        .nav-item i { width: 20px; }
-        /* Main Content */
-        main {
-            margin-left: var(--sidebar-width);
-            flex: 1;
-            padding: 40px;
-            max-width: 1200px;
-            margin-right: auto;
-            position: relative;
-        }
-        .content-section {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
-        .content-section.active { display: block; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-        .branding-title {
-            font-size: 0.9rem;
-            color: var(--secondary);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-            display: block;
-        }
-        /* Dashboard Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        .stats-card {
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .stats-title {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .stats-value { font-size: 2.5rem; font-weight: 700; }
-        /* Topics Section */
-        .topics-grid {
-            margin-top: 40px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        .topic-card {
-            padding: 20px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .topic-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .topic-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            background: rgba(58, 134, 255, 0.1);
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-        /* Quiz UI Overlay */
-        .quiz-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 14, 26, 0.95);
-            z-index: 1000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-        .quiz-card {
-            width: 95%;
-            max-width: 800px;
-            padding: 40px;
-            position: relative;
-        }
-        .quiz-progress {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            margin-bottom: 30px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        .question {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 30px;
-            line-height: 1.4;
-        }
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .option {
-            padding: 18px 25px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-            transition: 0.2s;
-            background: rgba(255, 255, 255, 0.03);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .option:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--primary); }
-        .option.correct { background: rgba(76, 201, 240, 0.15); border-color: var(--success); }
-        .option.wrong { background: rgba(247, 37, 133, 0.15); border-color: var(--error); }
-        .close-quiz {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: var(--text-muted);
-        }
-        /* AI Buddy Button */
-        .ai-buddy-btn {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            width: 60px;
-            height: 60px;
-            border-radius: 30px;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 8px 32px rgba(58, 134, 255, 0.4);
-            cursor: pointer;
-            z-index: 500;
-            transition: 0.3s;
-        }
-        /* Modal for Cases */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 14, 26, 0.8);
-            z-index: 2000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            width: 90%;
-            max-width: 600px;
-            padding: 40px;
-            position: relative;
-        }
-        .btn {
-            padding: 12px 25px;
-            border-radius: 12px;
-            border: none;
-            background: var(--primary);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn:hover { background: #2a76ef; }
-        footer {
-            margin-top: 60px;
-            padding: 40px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        @media (max-width: 1024px) {
-            aside { width: 80px; }
-            .logo-area span, .nav-item span { display: none; }
-            main { margin-left: 80px; }
-        }
-        .case-item {
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .case-item:hover {
-            background: rgba(58, 134, 255, 0.1) !important;
-            transform: scale(1.02);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morth Buddy — AI Orthodontics Learning</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --primary: #1a6b9a;
+  --accent: #00c9a7;
+  --gold: #f0a500;
+  --dark: #0d1b2a;
+  --glass: rgba(255,255,255,0.10);
+  --glass-border: rgba(255,255,255,0.20);
+  --card-shadow: 0 8px 32px rgba(26,107,154,0.18);
+  --font: 'Segoe UI', system-ui, sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: var(--font);
+  background: linear-gradient(135deg, #0d1b2a 0%, #1a3a5c 50%, #0d2d1f 100%);
+  min-height: 100vh;
+  color: #fff;
+  overflow-x: hidden;
+}
+.header {
+  background: rgba(13,27,42,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0 32px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo { display:flex; align-items:center; gap:12px; }
+.logo-icon { font-size:32px; }
+.logo-text h1 { font-size:22px; font-weight:700; color:#fff; }
+.logo-text p  { font-size:12px; color:var(--accent); }
+.header-actions { display:flex; gap:12px; align-items:center; }
+.btn-register {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  border: none; color:#fff; padding:10px 22px;
+  border-radius: 25px; font-weight:600; cursor:pointer;
+  font-size:14px; transition: transform 0.2s, box-shadow 0.2s;
+}
+.app-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 300px;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 28px 24px;
+}
+@media (max-width:1200px) {
+  .app-layout { grid-template-columns: 1fr; }
+  .sidebar-left, .sidebar-right { display:none; }
+}
+.glass-card {
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--card-shadow);
+}
+.nav-item {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px; border-radius:12px; cursor:pointer;
+  transition:all 0.2s; color:rgba(255,255,255,0.8); font-size:14px;
+}
+.nav-item:hover, .nav-item.active {
+  background:rgba(0,201,167,0.15); color:#fff;
+  border-left:3px solid var(--accent);
+}
+.community-btn {
+  display:flex; align-items:center; gap:12px;
+  padding:13px 16px; border-radius:14px;
+  text-decoration:none; font-size:14px; font-weight:600;
+  transition:all 0.2s; border:1px solid rgba(255,255,255,0.1);
+  margin-bottom: 10px;
+}
+.community-btn.whatsapp  { background:rgba(37,211,102,0.12); color:#25d366; }
+.community-btn.linkedin  { background:rgba(0,119,181,0.15); color:#0af; }
+.option-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px; padding: 16px 20px;
+  color:#fff; font-size:15px; cursor:pointer;
+  text-align:left; transition:all 0.25s;
+  display:flex; align-items:center; gap:12px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.explanation-box {
+  background: rgba(0,201,167,0.1); border:1px solid rgba(0,201,167,0.3);
+  border-radius:14px; padding:16px 20px; margin-top:16px;
+  font-size:14px; line-height:1.7; display:none;
+}
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(8px); z-index:1000;
+  display:none; align-items:center; justify-content:center;
+  padding:20px;
+}
+.modal-overlay.open { display:flex; }
+.modal-box {
+  background:linear-gradient(135deg,#0d2a40,#1a3a5c);
+  border:1px solid var(--glass-border); border-radius:24px;
+  padding:36px; max-width:500px; width:100%;
+}
+.floating-bar {
+  position:fixed; bottom:0; left:0; right:0;
+  background:rgba(13,27,42,0.95); backdrop-filter:blur(20px);
+  border-top:1px solid var(--glass-border); padding:12px 20px;
+  display:none; gap:10px; z-index:50;
+  justify-content:center;
+}
+@media (max-width:1200px) { .floating-bar { display:flex; } }
+</style>
 </head>
 <body>
-    <aside>
-        <div class="logo-area">
-            <i class="fas fa-brain"></i>
-            <span>MOrth Buddy</span>
-        </div>
-        <nav class="nav-links">
-            <div onclick="showSection('dashboard')" class="nav-item active" id="nav-dashboard">
-                <i class="fas fa-th-large"></i>
-                <span>Dashboard</span>
-            </div>
-            <div onclick="showSection('study')" class="nav-item" id="nav-study">
-                <i class="fas fa-graduation-cap"></i>
-                <span>Study Prep</span>
-            </div>
-            <div onclick="showSection('reference')" class="nav-item" id="nav-reference">
-                <i class="fas fa-book-medical"></i>
-                <span>Reference</span>
-            </div>
-            <div onclick="showSection('progress')" class="nav-item" id="nav-progress">
-                <i class="fas fa-chart-line"></i>
-                <span>Progress</span>
-            </div>
-            <div style="margin-top: auto;">
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </div>
-        </nav>
-    </aside>
-
-    <main>
-        <!-- Dashboard -->
-        <div id="section-dashboard" class="content-section active">
-            <header>
-                <div>
-                    <span class="branding-title">World's First AI-Powered MOrth RCS Exam Prep Platform</span>
-                    <h1>Welcome to <b>MOrth Buddy</b></h1>
-                    <p style="color: var(--text-muted);">Built by <b>Dr. Ajay Kubavat</b> | AI in Orthodontics</p>
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <a href="https://www.linkedin.com/in/dr-ajay-kubavat-708205210" target="_blank" class="glass" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; text-decoration: none; color: var(--secondary); font-size: 0.8rem;">
-                            <i class="fab fa-linkedin"></i> LinkedIn
-                        </a>
-                        <a href="https://chat.whatsapp.com/GjhzvmDA" target="_blank" class="glass" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; text-decoration: none; color: var(--success); font-size: 0.8rem;">
-                            <i class="fab fa-whatsapp"></i> Join Community
-                        </a>
-                    </div>
-                </div>
-            </header>
-
-            <div class="dashboard-grid">
-                <div class="stats-card glass">
-                    <span class="stats-title">Overall Mastery</span>
-                    <div style="height: 150px; width: 150px; margin: 0 auto;">
-                        <canvas id="progressChart"></canvas>
-                    </div>
-                    <div style="text-align: center;">
-                        <span class="stats-value" id="masteryValue">0%</span>
-                        <p style="color: var(--text-muted); font-size: 0.8rem;">Goal: 100% Mastery</p>
-                    </div>
-                </div>
-                <div class="stats-card glass">
-                    <span class="stats-title">Top Performance</span>
-                    <div style="margin-top: 10px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                            <span>Growth & Development</span>
-                            <span style="color: var(--success);">92%</span>
-                        </div>
-                        <div class="quiz-progress" style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
-                            <div class="progress-bar" style="width: 92%; height: 100%; background: var(--primary);"></div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; margin-top: 15px;">
-                            <span>Biomechanics</span>
-                            <span style="color: var(--success);">85%</span>
-                        </div>
-                        <div class="quiz-progress" style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
-                            <div class="progress-bar" style="width: 85%; height: 100%; background: var(--primary);"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="stats-card glass" style="background: linear-gradient(45deg, rgba(58, 134, 255, 0.1), rgba(0, 245, 212, 0.1));">
-                    <span class="stats-title">Study Streak</span>
-                    <span class="stats-value">12 Days</span>
-                    <p style="color: var(--text-muted);">Leading the orthodontic AI revolution!</p>
-                    <button class="glass" style="margin-top: 15px; padding: 12px; cursor: pointer; border: none; color: var(--text); background: var(--primary); border-radius: 12px; font-weight: 600;">Global Leaderboard</button>
-                </div>
-            </div>
-
-            <h2 style="margin-top: 40px;">Select a Module</h2>
-            <div class="topics-grid">
-                <div class="topic-card glass" onclick="startQuiz('Growth')">
-                    <div class="topic-icon"><i class="fas fa-child"></i></div>
-                    <h3>Growth & Development</h3>
-                    <p style="color: var(--text-muted); font-size: 0.8rem;">120 High-Yield Questions</p>
-                </div>
-                <div class="topic-card glass" onclick="startQuiz('Biomechanics')">
-                    <div class="topic-icon"><i class="fas fa-gears"></i></div>
-                    <h3>Biomechanics</h3>
-                    <p style="color: var(--text-muted); font-size: 0.8rem;">85 Core Principles</p>
-                </div>
-                <div class="topic-card glass" onclick="startQuiz('Clinical')">
-                    <div class="topic-icon"><i class="fas fa-stethoscope"></i></div>
-                    <h3>Clinical Practice</h3>
-                    <p style="color: var(--text-muted); font-size: 0.8rem;">250 Mock Cases</p>
-                </div>
-                <div class="topic-card glass" onclick="startQuiz('Radiology')">
-                    <div class="topic-icon"><i class="fas fa-x-ray"></i></div>
-                    <h3>Radiology & CBCT</h3>
-                    <p style="color: var(--text-muted); font-size: 0.8rem;">95 Diagnostic Scenarios</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Study Prep Section -->
-        <div id="section-study" class="content-section">
-            <h2>Study Prep Library</h2>
-            <div class="dashboard-grid">
-                <div class="topic-card glass" onclick="startQuiz('SBA')">
-                    <div class="topic-icon"><i class="fas fa-list-check"></i></div>
-                    <h3>SBA Practice</h3>
-                    <p style="color: var(--text-muted); font-size: 0.8rem;">Interactive Quiz with 15 Questions</p>
-                    <button class="btn" style="margin-top: 20px;">Launch Quiz</button>
-                </div>
-                <div class="stats-card glass">
-                    <div class="topic-icon"><i class="fas fa-file-medical"></i></div>
-                    <h3>Clinical Cases (16)</h3>
-                    <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
-                        <ul id="case-list" style="list-style: none; padding: 0; color: var(--text-muted);">
-                            <!-- Cases will be populated via JS -->
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Reference Section -->
-        <div id="section-reference" class="content-section">
-            <h2>Reference Material</h2>
-            <div class="dashboard-grid">
-                <div class="stats-card glass">
-                    <h3>Essential Study Materials</h3>
-                    <div style="color: var(--text-muted); line-height: 1.6;">
-                        <p>• <b>Postgraduate Notes in Orthodontics</b> - Bristol (9th Edition)</p>
-                        <p>• <b>An Introduction to Orthodontics</b> - Laura Mitchell</p>
-                        <p>• <b>Handbook of Orthodontics</b> - Martyn Cobourne</p>
-                        <p>• <b>The Clinical Guide to Orthodontics</b> - Jonathan Sandy</p>
-                        <p>• <b>Contemporary Orthodontics</b> - William Proffit</p>
-                        <p>• <b>Orthodontics: Current Principles and Techniques</b> - Graber</p>
-                        <p>• <b>Biomechanics in Orthodontics</b> - Ravindra Nanda</p>
-                    </div>
-                </div>
-                <div class="stats-card glass">
-                    <h3>Exam Guidance & Guidelines</h3>
-                    <div style="color: var(--text-muted); line-height: 1.6;">
-                        <p>• <b><a href="https://services.rcsed.ac.uk/exams/exam-details-membership-in-orthodontics-part-a/" target="_blank" style="color: var(--secondary); text-decoration: none;">RCSEd Exam Regulations & Blueprints</a></b></p>
-                        <p>• <b><a href="https://www.bos.org.uk/Portals/0/Public/docs/Clinical%20Guidelines/Orthodontic%20Treatment.pdf" target="_blank" style="color: var(--secondary); text-decoration: none;">BOS (British Orthodontic Society) Guidelines</a></b></p>
-                        <p>• <b><a href="https://www.rcsed.ac.uk/education-exams/exams" target="_blank" style="color: var(--secondary); text-decoration: none;">Clinical Effectiveness Bulletins</a></b></p>
-                        <p>• <b><a href="https://www.sdcep.org.uk/published-guidance/" target="_blank" style="color: var(--secondary); text-decoration: none;">SDCEP (Scottish Dental Clinical Effectiveness Programme)</a></b></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Progress Section -->
-        <div id="section-progress" class="content-section">
-            <h2>Detailed Analytics</h2>
-            <div class="glass" style="padding: 30px; margin-top: 20px;">
-                <h3>Performance by Topic</h3>
-                <div style="height: 300px; margin-top: 20px;">
-                    <canvas id="topicChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            © 2026 MOrth Buddy | <b>Dr. Ajay Kubavat</b> | <a href="https://www.linkedin.com/in/dr-ajay-kubavat-708205210" target="_blank" style="color: var(--secondary); text-decoration: none;">Connect on LinkedIn</a>
-        </footer>
-    </main>
-
-    <!-- Quiz Overlay -->
-    <div class="quiz-overlay" id="quizOverlay">
-        <div class="quiz-card glass">
-            <div class="close-quiz" onclick="closeQuiz()">×</div>
-            <div class="quiz-progress" style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-bottom: 30px; overflow: hidden;">
-                <div class="progress-bar" id="progressBar" style="height: 100%; background: var(--primary); width: 0%;"></div>
-            </div>
-            <div id="quizContent">
-                <div class="question" id="questionText">Loading...</div>
-                <div class="options" id="optionsContainer" style="display: flex; flex-direction: column; gap: 15px;"></div>
-                <button id="nextBtn" class="btn" style="display:none; margin-top: 30px; width: 100%;">Next Question</button>
-            </div>
-        </div>
+<script>
+  const WA_AI_ORTHO      = 'https://chat.whatsapp.com/JdJbzUIiVPlE2aEQI7Z2qd';
+  const WA_MORTH_BUDDY   = 'https://chat.whatsapp.com/BmlKwHA9xpi9i50iCM6yid';
+  const LINKEDIN_URL     = 'https://www.linkedin.com/in/dr-ajay-kubavat-708205210';
+</script>
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">🦷</div>
+    <div class="logo-text">
+      <h1>Morth Buddy</h1>
+      <p>AI Orthodontics Learning Platform</p>
     </div>
-
-    <!-- Case Modal -->
-    <div class="modal-overlay" id="caseModal">
-        <div class="modal-content glass">
-            <div class="close-quiz" onclick="closeModal()">×</div>
-            <h2 id="modalTitle">Case Details</h2>
-            <p id="modalDescription" style="margin-top: 20px; line-height: 1.6; color: var(--text-muted);"></p>
-        </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-register" onclick="openModal('registerModal')">📝 Register Free</button>
+  </div>
+</header>
+<div class="app-layout">
+  <aside class="sidebar-left">
+    <div class="glass-card">
+      <div class="nav-item active"><i class="fas fa-brain"></i> MCQ Practice</div>
+      <div class="nav-item"><i class="fas fa-chart-line"></i> Cephalometrics</div>
+      <div class="nav-item"><i class="fas fa-robot"></i> AI in Ortho</div>
     </div>
-
-    <div class="ai-buddy-btn" title="Ask Buddy AI" onclick="alert('Buddy AI is analyzing your progress...')"><i class="fas fa-robot"></i></div>
-
-    <script>
-        // Content Data
-        const questions = [
-            { q: "According to Scammon's growth curves, which tissue reaches 200% size at 10 years?", options: ["Neural", "Somatic", "Genital", "Lymphatic"], correct: 3 },
-            { q: "At what age does transverse growth typically plateau?", options: ["12 years", "15 years", "18 years", "21 years"], correct: 1 },
-            { q: "In CVM method, CVMS 2 is characterized by concavity at:", options: ["C2", "C3", "C4", "C5"], correct: 0 },
-            { q: "Embryological source of anterior pituitary lobe?", options: ["Ectoderm", "Mesoderm", "Endoderm", "Neural Crest"], correct: 0 },
-            { q: "Initiation stage of tooth development begins at week:", options: ["2-4", "4-6", "6-8", "8-10"], correct: 1 },
-            { q: "Hertwig’s epithelial root sheath forms during:", options: ["Bud stage", "Cap stage", "Early bell", "Late bell"], correct: 3 },
-            { q: "Theory involving dental follicle in eruption:", options: ["Follicular", "Root growth", "Hydrostatic", "PDL activity"], correct: 0 },
-            { q: "Normal SNA value in Eastman analysis?", options: ["78°", "81°", "82°", "84°"], correct: 1 },
-            { q: "First 7 days of prenatal development is:", options: ["Germinal", "Embryonic", "Foetal", "Somite"], correct: 0 },
-            { q: "Maxilla is formed entirely by which ossification?", options: ["Endochondral", "Intramembranous", "Both", "None"], correct: 1 },
-            { q: "Wits appraisal uses which reference plane?", options: ["FH Plane", "SN Plane", "Occlusal Plane", "Mandibular Plane"], correct: 2 },
-            { q: "AAO recommended age for first evaluation?", options: ["5 years", "7 years", "9 years", "11 years"], correct: 1 },
-            { q: "Movement requiring least force?", options: ["Tipping", "Translation", "Rotation", "Intrusion"], correct: 3 },
-            { q: "Twin Block primary mechanism?", options: ["Growth Modification", "Dental Tipping", "Space Opening", "Retention"], correct: 0 },
-            { q: "Which nerve supplies the muscles of mastication?", options: ["Facial", "Trigeminal", "Glossopharyngeal", "Hypoglossal"], correct: 1 }
-        ];
-
-        const cases = [
-            { title: "Skeletal Class II - Mandibular Deficiency", desc: "Treatment involves functional appliances like Twin Block or Herbst for growth modification." },
-            { title: "Impacted Maxillary Canines", desc: "Management involves surgical exposure and orthodontic traction using gold chains." },
-            { title: "Surgical-Orthodontic Class III", desc: "Combined approach using decompensation and LeFort I/BSSO surgery." },
-            { title: "Class II Division 2", desc: "Characterized by deep bite and lingually inclined maxillary incisors." },
-            { title: "Anterior Open Bite", desc: "Often related to thumb sucking or tongue thrusting habits." },
-            { title: "Unilateral Posterior Crossbite", desc: "Often requires RME (Rapid Maxillary Expansion) for correction." },
-            { title: "Missing Maxillary Laterals", desc: "Options include space closure or space opening for implants." },
-            { title: "Cleft Lip and Palate", desc: "Requires a multidisciplinary team including surgeons and speech therapists." },
-            { title: "Bimaxillary Proclination", desc: "Usually treated with four first premolar extractions for retraction." },
-            { title: "Periodontally Compromised Adult", desc: "Requires light forces and meticulous hygiene monitoring." },
-            { title: "TADs for Molar Distalization", desc: "Using skeletal anchorage to distalize molars without losing anchorage." },
-            { title: "Twin Block Therapy", desc: "A popular removable functional appliance for Class II correction." },
-            { title: "Clear Aligner Therapy", desc: "Effective for mild to moderate crowding using sequential aligners." },
-            { title: "Accelerated Orthodontics", desc: "Techniques like corticotomy or vibrations to speed up movement." },
-            { title: "Mandibular Second Molar Impaction", desc: "Often caused by lack of space or path of eruption interference." },
-            { title: "Relapse Management", desc: "Focuses on retention strategies like bonded lingual retainers." }
-        ];
-
-        let currentQ = 0;
-        let score = 0;
-        let totalAnswered = 0;
-
-        // Populate Cases
-        const caseList = document.getElementById('case-list');
-        cases.forEach((c, i) => {
-            const li = document.createElement('li');
-            li.className = 'case-item';
-            li.style = "margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; cursor: pointer;";
-            li.innerHTML = `<b>Case ${i+1}:</b> ${c.title}`;
-            li.onclick = () => showCaseDetail(c);
-            caseList.appendChild(li);
-        });
-
-        // Navigation
-        function showSection(id) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('section-' + id).classList.add('active');
-            document.getElementById('nav-' + id).classList.add('active');
-        }
-
-        // Quiz Logic
-        function startQuiz() {
-            currentQ = 0;
-            score = 0;
-            document.getElementById('quizOverlay').style.display = 'flex';
-            showQuestion();
-        }
-
-        function closeQuiz() { document.getElementById('quizOverlay').style.display = 'none'; }
-
-        function showQuestion() {
-            const q = questions[currentQ];
-            document.getElementById('questionText').innerText = q.q;
-            document.getElementById('progressBar').style.width = ((currentQ / questions.length) * 100) + '%';
-            const container = document.getElementById('optionsContainer');
-            container.innerHTML = '';
-            q.options.forEach((opt, i) => {
-                const div = document.createElement('div');
-                div.className = 'option';
-                div.style = "padding: 18px 25px; border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; transition: 0.2s; background: rgba(255, 255, 255, 0.03);";
-                div.innerText = opt;
-                div.onclick = () => checkAnswer(i, div);
-                container.appendChild(div);
-            });
-            document.getElementById('nextBtn').style.display = 'none';
-        }
-
-        function checkAnswer(idx, el) {
-            const q = questions[currentQ];
-            const opts = document.querySelectorAll('.option');
-            opts.forEach(o => o.style.pointerEvents = 'none');
-            if(idx === q.correct) {
-                el.style.borderColor = 'var(--success)';
-                el.style.background = 'rgba(76, 201, 240, 0.15)';
-                score++;
-            } else {
-                el.style.borderColor = 'var(--error)';
-                el.style.background = 'rgba(247, 37, 133, 0.15)';
-                opts[q.correct].style.borderColor = 'var(--success)';
-                opts[q.correct].style.background = 'rgba(76, 201, 240, 0.15)';
-            }
-            totalAnswered++;
-            updateMastery();
-            document.getElementById('nextBtn').style.display = 'block';
-            if(currentQ === questions.length - 1) {
-                document.getElementById('nextBtn').innerText = 'Finish Quiz';
-            } else {
-                document.getElementById('nextBtn').innerText = 'Next Question';
-            }
-        }
-
-        document.getElementById('nextBtn').onclick = () => {
-            currentQ++;
-            if(currentQ < questions.length) {
-                showQuestion();
-            } else {
-                alert(`Quiz Finished! Score: ${score}/${questions.length}`);
-                closeQuiz();
-            }
-        };
-
-        function updateMastery() {
-            const pct = Math.round((score / totalAnswered) * 100);
-            document.getElementById('masteryValue').innerText = pct + '%';
-            chart.data.datasets[0].data = [pct, 100 - pct];
-            chart.update();
-        }
-
-        // Charts
-        const ctx = document.getElementById('progressChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'doughnut',
-            data: { datasets: [{ data: [0, 100], backgroundColor: ['#3a86ff', 'rgba(255, 255, 255, 0.05)'], borderWidth: 0, circumference: 180, rotation: 270 }] },
-            options: { cutout: '80%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, maintainAspectRatio: false }
-        });
-
-        const topicCtx = document.getElementById('topicChart').getContext('2d');
-        new Chart(topicCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Growth', 'Biomechanics', 'Clinical', 'Radiology'],
-                datasets: [{
-                    label: 'Mastery %',
-                    data: [92, 85, 40, 20],
-                    backgroundColor: '#3a86ff'
-                }]
-            },
-            options: { scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } }
-        });
-
-        // Modals
-        function showCaseDetail(c) {
-            document.getElementById('modalTitle').innerText = c.title;
-            document.getElementById('modalDescription').innerText = c.desc;
-            document.getElementById('caseModal').style.display = 'flex';
-        }
-        function closeModal() { document.getElementById('caseModal').style.display = 'none'; }
-    </script>
+  </aside>
+  <main class="main-content">
+    <div class="glass-card">
+      <h2 id="questionText">Loading...</h2>
+      <div id="optionsGrid"></div>
+      <div class="explanation-box" id="explanationBox"></div>
+      <div style="margin-top:20px; display:flex; justify-content:space-between;">
+        <button onclick="openModal('reportModal')" style="background:none; border:1px solid #f72585; color:#f72585; padding:8px 15px; border-radius:20px; cursor:pointer;">🚩 Report Error</button>
+        <button id="nextBtn" style="display:none; background:var(--accent); border:none; color:white; padding:10px 20px; border-radius:20px; cursor:pointer;" onclick="nextQuestion()">Next →</button>
+      </div>
+    </div>
+  </main>
+  <aside class="sidebar-right">
+    <div class="glass-card">
+      <h3>Community</h3>
+      <a id="waAiLink" href="#" target="_blank" class="community-btn whatsapp"><i class="fab fa-whatsapp"></i> AI in Ortho</a>
+      <a id="waMorthLink" href="#" target="_blank" class="community-btn whatsapp"><i class="fab fa-whatsapp"></i> Morth Buddy</a>
+      <a id="liLink" href="#" target="_blank" class="community-btn linkedin"><i class="fab fa-linkedin"></i> LinkedIn</a>
+    </div>
+  </aside>
+</div>
+<div class="floating-bar">
+  <a id="waMobile" href="#" target="_blank" class="community-btn whatsapp">AI Ortho</a>
+  <a id="liMobile" href="#" target="_blank" class="community-btn linkedin">LinkedIn</a>
+</div>
+<div class="modal-overlay" id="registerModal">
+  <div class="modal-box">
+    <h2>Register</h2>
+    <p>Submit details for approval.</p>
+    <button onclick="closeModal('registerModal')">Close</button>
+  </div>
+</div>
+<div class="modal-overlay" id="reportModal">
+  <div class="modal-box">
+    <h2>Report Error</h2>
+    <textarea id="errorDetails" style="width:100%; height:100px; margin:10px 0;" placeholder="What is wrong?"></textarea>
+    <button onclick="closeModal('reportModal')">Submit</button>
+  </div>
+</div>
+<script>
+  document.getElementById('waAiLink').href = WA_AI_ORTHO;
+  document.getElementById('waMorthLink').href = WA_MORTH_BUDDY;
+  document.getElementById('liLink').href = LINKEDIN_URL;
+  document.getElementById('waMobile').href = WA_AI_ORTHO;
+  document.getElementById('liMobile').href = LINKEDIN_URL;
+  const questions = [
+    { q: "According to Scammon's growth curves, which tissue reaches 200% size at 10 years?", options: ["Neural", "Somatic", "Genital", "Lymphatic"], correct: 3, exp: "Lymphatic tissue undergoes excessive growth in childhood before involuting." },
+    { q: "Wits appraisal uses which reference plane?", options: ["FH Plane", "SN Plane", "Occlusal Plane", "Mandibular Plane"], correct: 2, exp: "Wits uses the functional occlusal plane." }
+  ];
+  let currentQ = 0;
+  function loadQuestion() {
+    const q = questions[currentQ];
+    document.getElementById('questionText').innerText = q.q;
+    const grid = document.getElementById('optionsGrid');
+    grid.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerText = opt;
+      btn.onclick = () => {
+        document.getElementById('explanationBox').style.display = 'block';
+        document.getElementById('explanationBox').innerText = q.exp;
+        document.getElementById('nextBtn').style.display = 'block';
+      };
+      grid.appendChild(btn);
+    });
+  }
+  function nextQuestion() {
+    currentQ = (currentQ + 1) % questions.length;
+    document.getElementById('explanationBox').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    loadQuestion();
+  }
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  loadQuestion();
+</script>
 </body>
 </html>
