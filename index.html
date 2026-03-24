@@ -251,6 +251,37 @@
             z-index: 500;
             transition: 0.3s;
         }
+        /* Modal for Cases */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 26, 0.8);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            position: relative;
+        }
+        .btn {
+            padding: 12px 25px;
+            border-radius: 12px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn:hover { background: #2a76ef; }
         footer {
             margin-top: 60px;
             padding: 40px 0;
@@ -263,6 +294,14 @@
             aside { width: 80px; }
             .logo-area span, .nav-item span { display: none; }
             main { margin-left: 80px; }
+        }
+        .case-item {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .case-item:hover {
+            background: rgba(58, 134, 255, 0.1) !important;
+            transform: scale(1.02);
         }
     </style>
 </head>
@@ -297,6 +336,7 @@
             </div>
         </nav>
     </aside>
+
     <main>
         <!-- Dashboard -->
         <div id="section-dashboard" class="content-section active">
@@ -305,24 +345,30 @@
                     <span class="branding-title">World's First AI-Powered MOrth RCS Exam Prep Platform</span>
                     <h1>Welcome back, <b>Dr. Ajay Kubavat</b></h1>
                     <p style="color: var(--text-muted);">Built by <b>Dr. Ajay Kubavat</b> | AI in Orthodontics</p>
-                    <a href="https://www.linkedin.com/in/dr-ajay-kubavat-708205210" target="_blank" class="glass" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; text-decoration: none; color: var(--secondary); font-size: 0.8rem; margin-top: 10px;">
-                        <i class="fab fa-linkedin"></i> LinkedIn Profile
-                    </a>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <a href="https://www.linkedin.com/in/dr-ajay-kubavat-708205210" target="_blank" class="glass" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; text-decoration: none; color: var(--secondary); font-size: 0.8rem;">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                        <a href="https://chat.whatsapp.com/GjhzvmDA" target="_blank" class="glass" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; text-decoration: none; color: var(--success); font-size: 0.8rem;">
+                            <i class="fab fa-whatsapp"></i> Join Community
+                        </a>
+                    </div>
                 </div>
                 <div class="glass" style="padding: 10px 20px; border-radius: 30px; display: flex; align-items: center; gap: 10px;">
                     <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700;">AK</div>
                     <span>Authority</span>
                 </div>
             </header>
+
             <div class="dashboard-grid">
                 <div class="stats-card glass">
-                    <span class="stats-title">Today's Progress</span>
+                    <span class="stats-title">Overall Mastery</span>
                     <div style="height: 150px; width: 150px; margin: 0 auto;">
                         <canvas id="progressChart"></canvas>
                     </div>
                     <div style="text-align: center;">
-                        <span class="stats-value">75%</span>
-                        <p style="color: var(--text-muted); font-size: 0.8rem;">Goal: 20 Questions</p>
+                        <span class="stats-value" id="masteryValue">0%</span>
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">Goal: 100% Mastery</p>
                     </div>
                 </div>
                 <div class="stats-card glass">
@@ -332,21 +378,26 @@
                             <span>Growth & Development</span>
                             <span style="color: var(--success);">92%</span>
                         </div>
-                        <div class="quiz-progress"><div class="progress-bar" style="width: 92%;"></div></div>
+                        <div class="quiz-progress" style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                            <div class="progress-bar" style="width: 92%; height: 100%; background: var(--primary);"></div>
+                        </div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 5px; margin-top: 15px;">
                             <span>Biomechanics</span>
                             <span style="color: var(--success);">85%</span>
                         </div>
-                        <div class="quiz-progress"><div class="progress-bar" style="width: 85%;"></div></div>
+                        <div class="quiz-progress" style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                            <div class="progress-bar" style="width: 85%; height: 100%; background: var(--primary);"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="stats-card glass" style="background: linear-gradient(45deg, rgba(58, 134, 255, 0.1), rgba(0, 245, 212, 0.1));">
                     <span class="stats-title">Study Streak</span>
                     <span class="stats-value">12 Days</span>
                     <p style="color: var(--text-muted);">You're leading the orthodontic AI revolution!</p>
-                    <button class="glass" style="margin-top: 15px; padding: 12px; cursor: pointer; border: none; color: var(--text); background: var(--primary); border-radius: 12px; font-weight: 600;">View Global Leaderboard</button>
+                    <button class="glass" style="margin-top: 15px; padding: 12px; cursor: pointer; border: none; color: var(--text); background: var(--primary); border-radius: 12px; font-weight: 600;">Global Leaderboard</button>
                 </div>
             </div>
+
             <h2 style="margin-top: 40px;">Select a Module</h2>
             <div class="topics-grid">
                 <div class="topic-card glass" onclick="startQuiz('Growth')">
@@ -371,41 +422,29 @@
                 </div>
             </div>
         </div>
+
         <!-- Study Prep Section -->
         <div id="section-study" class="content-section">
             <h2>Study Prep Library</h2>
             <div class="dashboard-grid">
-                <div class="topic-card glass" onclick="showSection('dashboard')">
+                <div class="topic-card glass" onclick="startQuiz('SBA')">
                     <div class="topic-icon"><i class="fas fa-list-check"></i></div>
                     <h3>SBA Practice</h3>
-                    <p style="color: var(--text-muted); font-size: 0.8rem;">Access 500+ SBA Questions in the Dashboard</p>
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">Interactive Quiz with 15 Questions</p>
+                    <button class="btn" style="margin-top: 20px;">Launch Quiz</button>
                 </div>
                 <div class="stats-card glass">
                     <div class="topic-icon"><i class="fas fa-file-medical"></i></div>
-                    <h3>Mock Exams & 16 Clinical Cases</h3>
+                    <h3>Clinical Cases (16)</h3>
                     <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
-                        <ul style="list-style: none; padding: 0; color: var(--text-muted);">
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 1:</b> Skeletal Class II - Mandibular Deficiency</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 2:</b> Impacted Maxillary Canines Management</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 3:</b> Surgical-Orthodontic Class III</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 4:</b> Class II Division 2 - Deep Bite Management</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 5:</b> Anterior Open Bite - Habit & Mechanics</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 6:</b> Unilateral Posterior Crossbite Management</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 7:</b> Congenitally Missing Maxillary Laterals</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 8:</b> Cleft Lip and Palate - Multidisciplinary</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 9:</b> Bimaxillary Proclination - Extraction Protocol</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 10:</b> Periodontally Compromised Adult Patient</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 11:</b> TADs for Molar Distalization</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 12:</b> Twin Block Therapy - Growth Modification</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 13:</b> Clear Aligner Therapy for Severe Crowding</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 14:</b> Accelerated Osteogenic Orthodontics</li>
-                            <li style="margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 15:</b> Mandibular Second Molar Impaction</li>
-                            <li style="padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;"><b>Case 16:</b> Relapse Management & Retention Strategies</li>
+                        <ul id="case-list" style="list-style: none; padding: 0; color: var(--text-muted);">
+                            <!-- Cases will be populated via JS -->
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- Reference Section -->
         <div id="section-reference" class="content-section">
             <h2>Reference Material</h2>
@@ -413,18 +452,9 @@
                 <div class="stats-card glass">
                     <h3>Academic Profiles</h3>
                     <ul style="list-style: none; padding: 0; color: var(--text-muted); display: flex; flex-direction: column; gap: 15px;">
-                        <li>
-                            <i class="fab fa-google" style="color: #4285F4; margin-right: 10px;"></i>
-                            <a href="https://scholar.google.com/citations?user=cqgPml4AAAAJ" target="_blank" style="color: var(--primary); text-decoration: none;">Google Scholar Profile</a>
-                        </li>
-                        <li>
-                            <i class="fab fa-researchgate" style="color: #00ccbb; margin-right: 10px;"></i>
-                            <a href="https://researchgate.net/profile/Ajay-Kubavat" target="_blank" style="color: var(--primary); text-decoration: none;">ResearchGate Profile</a>
-                        </li>
-                        <li>
-                            <i class="fas fa-id-card" style="color: var(--secondary); margin-right: 10px;"></i>
-                            <a href="https://orcid.org/0000-0003-2099-9715" target="_blank" style="color: var(--primary); text-decoration: none;">ORCID ID: 0000-0003-2099-9715</a>
-                        </li>
+                        <li><i class="fab fa-google" style="color: #4285F4; margin-right: 10px;"></i><a href="https://scholar.google.com/citations?user=cqgPml4AAAAJ" target="_blank" style="color: var(--primary); text-decoration: none;">Google Scholar Profile</a></li>
+                        <li><i class="fab fa-researchgate" style="color: #00ccbb; margin-right: 10px;"></i><a href="https://researchgate.net/profile/Ajay-Kubavat" target="_blank" style="color: var(--primary); text-decoration: none;">ResearchGate Profile</a></li>
+                        <li><i class="fas fa-id-card" style="color: var(--secondary); margin-right: 10px;"></i><a href="https://orcid.org/0000-0003-2099-9715" target="_blank" style="color: var(--primary); text-decoration: none;">ORCID ID</a></li>
                     </ul>
                 </div>
                 <div class="stats-card glass">
@@ -438,94 +468,208 @@
                 </div>
             </div>
         </div>
+
+        <!-- Progress Section -->
         <div id="section-progress" class="content-section">
-            <h2>Detailed Progress Analytics</h2>
-            <p>AI-driven insights into your strengths and weaknesses.</p>
+            <h2>Detailed Analytics</h2>
+            <div class="glass" style="padding: 30px; margin-top: 20px;">
+                <h3>Performance by Topic</h3>
+                <div style="height: 300px; margin-top: 20px;">
+                    <canvas id="topicChart"></canvas>
+                </div>
+            </div>
         </div>
+
         <footer>
             © 2026 MOrth Buddy | <b>Dr. Ajay Kubavat</b> | <a href="https://www.linkedin.com/in/dr-ajay-kubavat-708205210" target="_blank" style="color: var(--secondary); text-decoration: none;">Connect on LinkedIn</a>
         </footer>
     </main>
+
     <!-- Quiz Overlay -->
     <div class="quiz-overlay" id="quizOverlay">
         <div class="quiz-card glass">
             <div class="close-quiz" onclick="closeQuiz()">×</div>
-            <div class="quiz-progress">
-                <div class="progress-bar" id="progressBar" style="width: 10%;"></div>
+            <div class="quiz-progress" style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-bottom: 30px; overflow: hidden;">
+                <div class="progress-bar" id="progressBar" style="height: 100%; background: var(--primary); width: 0%;"></div>
             </div>
             <div id="quizContent">
-                <div class="question" id="questionText">
-                    According to Scammon's growth curves, which tissue reaches double its adult size (200%) at 10 years of age?
-                </div>
-                <div class="options">
-                    <div class="option" onclick="checkAnswer(this, false)">
-                        <div style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-right: 15px;">A</div>
-                        Neural
-                    </div>
-                    <div class="option" onclick="checkAnswer(this, false)">
-                        <div style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-right: 15px;">B</div>
-                        Somatic
-                    </div>
-                    <div class="option" onclick="checkAnswer(this, false)">
-                        <div style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-right: 15px;">C</div>
-                        Genital
-                    </div>
-                    <div class="option" onclick="checkAnswer(this, true)">
-                        <div style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-right: 15px;">D</div>
-                        Lymphatic
-                    </div>
-                </div>
+                <div class="question" id="questionText">Loading...</div>
+                <div class="options" id="optionsContainer" style="display: flex; flex-direction: column; gap: 15px;"></div>
+                <button id="nextBtn" class="btn" style="display:none; margin-top: 30px; width: 100%;">Next Question</button>
             </div>
         </div>
     </div>
-    <div class="ai-buddy-btn" title="Ask Buddy AI"><i class="fas fa-robot"></i></div>
+
+    <!-- Case Modal -->
+    <div class="modal-overlay" id="caseModal">
+        <div class="modal-content glass">
+            <div class="close-quiz" onclick="closeModal()">×</div>
+            <h2 id="modalTitle">Case Details</h2>
+            <p id="modalDescription" style="margin-top: 20px; line-height: 1.6; color: var(--text-muted);"></p>
+        </div>
+    </div>
+
+    <div class="ai-buddy-btn" title="Ask Buddy AI" onclick="alert('Buddy AI is analyzing your progress...')"><i class="fas fa-robot"></i></div>
+
     <script>
-        // Tab Navigation
-        function showSection(sectionId) {
+        // Content Data
+        const questions = [
+            { q: "According to Scammon's growth curves, which tissue reaches 200% size at 10 years?", options: ["Neural", "Somatic", "Genital", "Lymphatic"], correct: 3 },
+            { q: "At what age does transverse growth typically plateau?", options: ["12 years", "15 years", "18 years", "21 years"], correct: 1 },
+            { q: "In CVM method, CVMS 2 is characterized by concavity at:", options: ["C2", "C3", "C4", "C5"], correct: 0 },
+            { q: "Embryological source of anterior pituitary lobe?", options: ["Ectoderm", "Mesoderm", "Endoderm", "Neural Crest"], correct: 0 },
+            { q: "Initiation stage of tooth development begins at week:", options: ["2-4", "4-6", "6-8", "8-10"], correct: 1 },
+            { q: "Hertwig’s epithelial root sheath forms during:", options: ["Bud stage", "Cap stage", "Early bell", "Late bell"], correct: 3 },
+            { q: "Theory involving dental follicle in eruption:", options: ["Follicular", "Root growth", "Hydrostatic", "PDL activity"], correct: 0 },
+            { q: "Normal SNA value in Eastman analysis?", options: ["78°", "81°", "82°", "84°"], correct: 1 },
+            { q: "First 7 days of prenatal development is:", options: ["Germinal", "Embryonic", "Foetal", "Somite"], correct: 0 },
+            { q: "Maxilla is formed entirely by which ossification?", options: ["Endochondral", "Intramembranous", "Both", "None"], correct: 1 },
+            { q: "Wits appraisal uses which reference plane?", options: ["FH Plane", "SN Plane", "Occlusal Plane", "Mandibular Plane"], correct: 2 },
+            { q: "AAO recommended age for first evaluation?", options: ["5 years", "7 years", "9 years", "11 years"], correct: 1 },
+            { q: "Movement requiring least force?", options: ["Tipping", "Translation", "Rotation", "Intrusion"], correct: 3 },
+            { q: "Twin Block primary mechanism?", options: ["Growth Modification", "Dental Tipping", "Space Opening", "Retention"], correct: 0 },
+            { q: "Which nerve supplies the muscles of mastication?", options: ["Facial", "Trigeminal", "Glossopharyngeal", "Hypoglossal"], correct: 1 }
+        ];
+
+        const cases = [
+            { title: "Skeletal Class II - Mandibular Deficiency", desc: "Treatment involves functional appliances like Twin Block or Herbst for growth modification." },
+            { title: "Impacted Maxillary Canines", desc: "Management involves surgical exposure and orthodontic traction using gold chains." },
+            { title: "Surgical-Orthodontic Class III", desc: "Combined approach using decompensation and LeFort I/BSSO surgery." },
+            { title: "Class II Division 2", desc: "Characterized by deep bite and lingually inclined maxillary incisors." },
+            { title: "Anterior Open Bite", desc: "Often related to thumb sucking or tongue thrusting habits." },
+            { title: "Unilateral Posterior Crossbite", desc: "Often requires RME (Rapid Maxillary Expansion) for correction." },
+            { title: "Missing Maxillary Laterals", desc: "Options include space closure or space opening for implants." },
+            { title: "Cleft Lip and Palate", desc: "Requires a multidisciplinary team including surgeons and speech therapists." },
+            { title: "Bimaxillary Proclination", desc: "Usually treated with four first premolar extractions for retraction." },
+            { title: "Periodontally Compromised Adult", desc: "Requires light forces and meticulous hygiene monitoring." },
+            { title: "TADs for Molar Distalization", desc: "Using skeletal anchorage to distalize molars without losing anchorage." },
+            { title: "Twin Block Therapy", desc: "A popular removable functional appliance for Class II correction." },
+            { title: "Clear Aligner Therapy", desc: "Effective for mild to moderate crowding using sequential aligners." },
+            { title: "Accelerated Orthodontics", desc: "Techniques like corticotomy or vibrations to speed up movement." },
+            { title: "Mandibular Second Molar Impaction", desc: "Often caused by lack of space or path of eruption interference." },
+            { title: "Relapse Management", desc: "Focuses on retention strategies like bonded lingual retainers." }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+        let totalAnswered = 0;
+
+        // Populate Cases
+        const caseList = document.getElementById('case-list');
+        cases.forEach((c, i) => {
+            const li = document.createElement('li');
+            li.className = 'case-item';
+            li.style = "margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; cursor: pointer;";
+            li.innerHTML = `<b>Case ${i+1}:</b> ${c.title}`;
+            li.onclick = () => showCaseDetail(c);
+            caseList.appendChild(li);
+        });
+
+        // Navigation
+        function showSection(id) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('section-' + sectionId).classList.add('active');
-            document.getElementById('nav-' + sectionId).classList.add('active');
+            document.getElementById('section-' + id).classList.add('active');
+            document.getElementById('nav-' + id).classList.add('active');
         }
-        // Progress Chart
+
+        // Quiz Logic
+        function startQuiz() {
+            currentQ = 0;
+            score = 0;
+            document.getElementById('quizOverlay').style.display = 'flex';
+            showQuestion();
+        }
+
+        function closeQuiz() { document.getElementById('quizOverlay').style.display = 'none'; }
+
+        function showQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('questionText').innerText = q.q;
+            document.getElementById('progressBar').style.width = ((currentQ / questions.length) * 100) + '%';
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            q.options.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.style = "padding: 18px 25px; border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; transition: 0.2s; background: rgba(255, 255, 255, 0.03);";
+                div.innerText = opt;
+                div.onclick = () => checkAnswer(i, div);
+                container.appendChild(div);
+            });
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        function checkAnswer(idx, el) {
+            const q = questions[currentQ];
+            const opts = document.querySelectorAll('.option');
+            opts.forEach(o => o.style.pointerEvents = 'none');
+            if(idx === q.correct) {
+                el.style.borderColor = 'var(--success)';
+                el.style.background = 'rgba(76, 201, 240, 0.15)';
+                score++;
+            } else {
+                el.style.borderColor = 'var(--error)';
+                el.style.background = 'rgba(247, 37, 133, 0.15)';
+                opts[q.correct].style.borderColor = 'var(--success)';
+                opts[q.correct].style.background = 'rgba(76, 201, 240, 0.15)';
+            }
+            totalAnswered++;
+            updateMastery();
+            document.getElementById('nextBtn').style.display = 'block';
+            if(currentQ === questions.length - 1) {
+                document.getElementById('nextBtn').innerText = 'Finish Quiz';
+            } else {
+                document.getElementById('nextBtn').innerText = 'Next Question';
+            }
+        }
+
+        document.getElementById('nextBtn').onclick = () => {
+            currentQ++;
+            if(currentQ < questions.length) {
+                showQuestion();
+            } else {
+                alert(`Quiz Finished! Score: ${score}/${questions.length}`);
+                closeQuiz();
+            }
+        };
+
+        function updateMastery() {
+            const pct = Math.round((score / totalAnswered) * 100);
+            document.getElementById('masteryValue').innerText = pct + '%';
+            chart.data.datasets[0].data = [pct, 100 - pct];
+            chart.update();
+        }
+
+        // Charts
         const ctx = document.getElementById('progressChart').getContext('2d');
-        new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [75, 25],
-                    backgroundColor: ['#3a86ff', 'rgba(255, 255, 255, 0.05)'],
-                    borderWidth: 0,
-                    circumference: 180,
-                    rotation: 270,
-                }]
-            },
+            data: { datasets: [{ data: [0, 100], backgroundColor: ['#3a86ff', 'rgba(255, 255, 255, 0.05)'], borderWidth: 0, circumference: 180, rotation: 270 }] },
             options: { cutout: '80%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, maintainAspectRatio: false }
         });
-        function startQuiz(topic) {
-            document.getElementById('quizOverlay').style.display = 'flex';
+
+        const topicCtx = document.getElementById('topicChart').getContext('2d');
+        new Chart(topicCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Growth', 'Biomechanics', 'Clinical', 'Radiology'],
+                datasets: [{
+                    label: 'Mastery %',
+                    data: [92, 85, 40, 20],
+                    backgroundColor: '#3a86ff'
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } }
+        });
+
+        // Modals
+        function showCaseDetail(c) {
+            document.getElementById('modalTitle').innerText = c.title;
+            document.getElementById('modalDescription').innerText = c.desc;
+            document.getElementById('caseModal').style.display = 'flex';
         }
-        function closeQuiz() {
-            document.getElementById('quizOverlay').style.display = 'none';
-        }
-        function checkAnswer(el, isCorrect) {
-            if (isCorrect) {
-                el.classList.add('correct');
-                el.querySelector('div').style.background = 'var(--success)';
-                el.querySelector('div').style.borderColor = 'var(--success)';
-                el.querySelector('div').style.color = 'var(--bg-dark)';
-            } else {
-                el.classList.add('wrong');
-                el.querySelector('div').style.background = 'var(--error)';
-                el.querySelector('div').style.borderColor = 'var(--error)';
-            }
-            setTimeout(() => {
-                if(isCorrect) {
-                    alert('Excellent! Lymphatic tissue reaches its peak (200%) at age 10-12 before involuting.');
-                    closeQuiz();
-                }
-            }, 300);
-        }
+        function closeModal() { document.getElementById('caseModal').style.display = 'none'; }
     </script>
 </body>
 </html>
