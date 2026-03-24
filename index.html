@@ -15,8 +15,9 @@
             --bg-dark: #0a0e1a;
             --bg-card: rgba(255, 255, 255, 0.07);
             --text: #e8f0fe;
+            --success: #4cc9f0;
+            --error: #f72585;
         }
-
         body {
             margin: 0;
             padding: 0;
@@ -25,7 +26,6 @@
             font-family: 'Inter', -apple-system, sans-serif;
             min-height: 100vh;
         }
-
         .glass {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
@@ -33,18 +33,15 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
         }
-
         .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
         }
-
         header {
             text-align: center;
             padding: 40px 0;
         }
-
         h1 {
             font-size: 3rem;
             margin-bottom: 10px;
@@ -52,41 +49,26 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .hero-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 40px;
         }
-
         .stat-card {
             padding: 25px;
             text-align: center;
             transition: transform 0.3s ease;
         }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
         .sections-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
         }
-
         .card {
             padding: 30px;
-            cursor: pointer;
             transition: all 0.3s ease;
         }
-
-        .card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(58, 134, 255, 0.2);
-        }
-
         .btn {
             background: var(--primary);
             color: white;
@@ -97,46 +79,43 @@
             cursor: pointer;
             margin-top: 15px;
             width: 100%;
+            transition: background 0.3s;
         }
-
-        nav {
-            position: sticky;
-            top: 20px;
-            z-index: 100;
-            margin-bottom: 30px;
-        }
-
-        .nav-inner {
-            display: flex;
+        .btn:hover { background: #2a76ef; }
+        
+        #quiz-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
             justify-content: center;
-            gap: 15px;
-            padding: 10px;
+            align-items: center;
         }
-
-        .nav-item {
-            padding: 8px 15px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: var(--text);
-            font-size: 0.9rem;
+        .quiz-container {
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
         }
-
-        .nav-item.active {
-            background: var(--primary);
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s;
         }
-
-        #chart-container {
-            width: 100%;
-            max-width: 300px;
-            margin: 0 auto;
-        }
-
-        footer {
-            text-align: center;
-            padding: 50px 0;
-            font-size: 0.8rem;
-            opacity: 0.6;
-        }
+        .option:hover { background: rgba(255,255,255,0.1); }
+        .option.correct { background: var(--success) !important; color: #000; font-weight: bold; }
+        .option.wrong { background: var(--error) !important; }
+        
+        nav { position: sticky; top: 20px; z-index: 100; margin-bottom: 30px; }
+        .nav-inner { display: flex; justify-content: center; gap: 15px; padding: 10px; }
+        .nav-item { padding: 8px 15px; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.9rem; }
+        .nav-item.active { background: var(--primary); }
+        footer { text-align: center; padding: 50px 0; font-size: 0.8rem; opacity: 0.6; }
     </style>
 </head>
 <body>
@@ -156,20 +135,20 @@
 
         <div class="hero-stats">
             <div class="glass stat-card">
-                <div id="chart-container">
+                <div style="width: 100px; height: 100px; margin: 0 auto 10px;">
                     <canvas id="overallProgress"></canvas>
                 </div>
                 <h3>Overall Progress</h3>
-                <p>0% Complete</p>
+                <p id="progress-text">0% Complete</p>
             </div>
             <div class="glass stat-card">
                 <i class="fas fa-fire" style="color: #ff9f1c; font-size: 2rem;"></i>
-                <h2>0 Days</h2>
+                <h2 id="streak-count">0 Days</h2>
                 <p>Study Streak</p>
             </div>
             <div class="glass stat-card">
                 <i class="fas fa-clock" style="color: var(--secondary); font-size: 2rem;"></i>
-                <h2>0.0h</h2>
+                <h2 id="time-count">0.0h</h2>
                 <p>Time Studied</p>
             </div>
         </div>
@@ -178,32 +157,116 @@
             <div class="glass card">
                 <h3><i class="fas fa-file-alt"></i> Part A: Written</h3>
                 <p>SBA Practice & Mock Exams</p>
-                <div style="margin: 15px 0; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;">
-                    <div style="width: 0%; height: 100%; background: var(--primary); border-radius: 2px;"></div>
-                </div>
-                <p>180 Questions Available</p>
-                <button class="btn">Launch Practice</button>
+                <p id="q-count">10 High-Yield Questions Added</p>
+                <button class="btn" onclick="startQuiz()">Launch Practice</button>
             </div>
-
             <div class="glass card">
                 <h3><i class="fas fa-stethoscope"></i> Part B: Clinical</h3>
                 <p>Case Studies & Diagnostics</p>
-                <div style="margin: 15px 0; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;">
-                    <div style="width: 0%; height: 100%; background: var(--secondary); border-radius: 2px;"></div>
-                </div>
                 <p>16 Clinical Cases</p>
                 <button class="btn">Review Cases</button>
             </div>
         </div>
     </div>
 
+    <div id="quiz-overlay">
+        <div class="glass quiz-container">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <span id="quiz-progress">Question 1/10</span>
+                <span onclick="closeQuiz()" style="cursor:pointer;"><i class="fas fa-times"></i></span>
+            </div>
+            <h3 id="question-text">Loading question...</h3>
+            <div id="options-container"></div>
+            <button id="next-btn" class="btn" style="display:none;" onclick="nextQuestion()">Next Question</button>
+        </div>
+    </div>
+
     <footer>
-        <p>&copy; 2026 MOrth Buddy | Dr. Ajay Kubavat | Open Source for Orthodontic Excellence</p>
+        <p>© 2026 MOrth Buddy | Dr. Ajay Kubavat | Open Source for Orthodontic Excellence</p>
     </footer>
 
     <script>
+        const questions = [
+            { q: "According to Scammon's growth curves, which tissue reaches double its adult size (200%) at 10 years of age?", options: ["Neural", "Somatic", "Genital", "Lymphatic"], correct: 3 },
+            { q: "At what age does transverse growth typically plateau due to mid-palatal suture fusion?", options: ["12 years", "15 years", "18 years", "21 years"], correct: 1 },
+            { q: "In the CVM method, which stage is characterized by C2 lower border being concave while C3 and C4 are still trapezoid?", options: ["CVMS 1", "CVMS 2", "CVMS 3", "CVMS 4"], correct: 1 },
+            { q: "What is the embryological source of the anterior lobe of the pituitary gland?", options: ["Ectoderm", "Mesoderm", "Endoderm", "Neural Crest"], correct: 0 },
+            { q: "The 'Initiation stage' of tooth development begins around which week of intra-uterine life?", options: ["2nd-4th week", "4th-6th week", "6th-8th week", "8th-10th week"], correct: 1 },
+            { q: "Hertwig’s epithelial root sheath (HERS) is formed during which stage of tooth development?", options: ["Bud stage", "Cap stage", "Early bell stage", "Late bell stage"], correct: 3 },
+            { q: "Which theory of tooth eruption involves the central role of the dental follicle?", options: ["Follicular theory", "Root growth theory", "Hydrostatic forces theory", "Periodontal ligament activity theory"], correct: 0 },
+            { q: "The SN line elongates by how much in males between 5-20 years?", options: ["5 mm", "8 mm", "10 mm", "12 mm"], correct: 2 },
+            { q: "According to the Eastman analysis, what is the normal value for SNA?", options: ["78 degrees", "81 degrees", "82 degrees", "84 degrees"], correct: 1 },
+            { q: "Which stage of prenatal development occurs during the first 7 days of intrauterine life?", options: ["Germinal", "Embryonic", "Foetal", "Somite"], correct: 0 }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+
+        function startQuiz() {
+            document.getElementById('quiz-overlay').style.display = 'flex';
+            showQuestion();
+        }
+
+        function closeQuiz() {
+            document.getElementById('quiz-overlay').style.display = 'none';
+        }
+
+        function showQuestion() {
+            const question = questions[currentQ];
+            document.getElementById('question-text').innerText = question.q;
+            document.getElementById('quiz-progress').innerText = `Question ${currentQ + 1}/${questions.length}`;
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            question.options.forEach((opt, idx) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerText = opt;
+                div.onclick = () => checkAnswer(idx, div);
+                container.appendChild(div);
+            });
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function checkAnswer(idx, el) {
+            const question = questions[currentQ];
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+            if(idx === question.correct) {
+                el.classList.add('correct'); score++;
+            } else {
+                el.classList.add('wrong');
+                options[question.correct].classList.add('correct');
+            }
+            document.getElementById('next-btn').style.display = 'block';
+            updateOverallProgress();
+        }
+
+        function nextQuestion() {
+            currentQ++;
+            if(currentQ < questions.length) {
+                showQuestion();
+            } else {
+                document.getElementById('question-text').innerText = `Quiz Complete! You scored ${score}/${questions.length}`;
+                document.getElementById('options-container').innerHTML = '';
+                document.getElementById('next-btn').innerText = 'Restart';
+                document.getElementById('next-btn').onclick = () => {
+                    currentQ = 0; score = 0; 
+                    document.getElementById('next-btn').innerText = 'Next Question';
+                    document.getElementById('next-btn').onclick = nextQuestion;
+                    showQuestion();
+                };
+            }
+        }
+
+        function updateOverallProgress() {
+            const pct = Math.round((score / questions.length) * 100);
+            document.getElementById('progress-text').innerText = `${pct}% Complete`;
+            chart.data.datasets[0].data = [pct, 100 - pct];
+            chart.update();
+        }
+
         const ctx = document.getElementById('overallProgress').getContext('2d');
-        new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 datasets: [{
@@ -214,15 +277,8 @@
                     rotation: 0
                 }]
             },
-            options: {
-                cutout: '80%',
-                plugins: { legend: { display: false }, tooltip: { enabled: false } }
-            }
+            options: { cutout: '80%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
         });
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js');
-        }
     </script>
 </body>
 </html>
