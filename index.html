@@ -3,228 +3,1043 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Morth Buddy — AI Orthodontics Learning</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<title>MOrth Buddy — World's First AI-Powered MOrth RCS Exam Prep Platform</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
   --primary: #1a6b9a;
   --accent: #00c9a7;
   --gold: #f0a500;
+  --danger: #f72585;
   --dark: #0d1b2a;
-  --glass: rgba(255,255,255,0.10);
-  --glass-border: rgba(255,255,255,0.20);
-  --card-shadow: 0 8px 32px rgba(26,107,154,0.18);
-  --font: 'Segoe UI', system-ui, sans-serif;
+  --darker: #07111a;
+  --glass: rgba(255,255,255,0.07);
+  --glass-border: rgba(255,255,255,0.15);
+  --card-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  --correct: #00c9a7;
+  --wrong: #f72585;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: var(--font);
-  background: linear-gradient(135deg, #0d1b2a 0%, #1a3a5c 50%, #0d2d1f 100%);
-  min-height: 100vh;
-  color: #fff;
-  overflow-x: hidden;
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  background:linear-gradient(135deg,#07111a 0%,#0d1b2a 40%,#0a2218 100%);
+  min-height:100vh; color:#fff; overflow-x:hidden;
 }
-.header {
-  background: rgba(13,27,42,0.85);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--glass-border);
-  padding: 0 32px;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+
+/* ── HEADER ── */
+.header{
+  background:rgba(7,17,26,0.92); backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--glass-border);
+  padding:0 28px; height:68px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:200;
 }
-.logo { display:flex; align-items:center; gap:12px; }
-.logo-icon { font-size:32px; }
-.logo-text h1 { font-size:22px; font-weight:700; color:#fff; }
-.logo-text p  { font-size:12px; color:var(--accent); }
-.header-actions { display:flex; gap:12px; align-items:center; }
-.btn-register {
-  background: linear-gradient(135deg, var(--accent), var(--primary));
-  border: none; color:#fff; padding:10px 22px;
-  border-radius: 25px; font-weight:600; cursor:pointer;
-  font-size:14px; transition: transform 0.2s, box-shadow 0.2s;
+.logo{display:flex;align-items:center;gap:14px;}
+.logo-icon{font-size:34px; filter:drop-shadow(0 0 10px rgba(0,201,167,0.5));}
+.logo-text h1{font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.3px;}
+.logo-text p{font-size:11px;color:var(--accent);font-weight:500;}
+.logo-text .builder{font-size:11px;color:rgba(255,255,255,0.55);}
+.logo-text .builder strong{color:var(--gold);font-weight:700;}
+.header-right{display:flex;gap:10px;align-items:center;}
+.btn{border:none;border-radius:22px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--primary));color:#fff;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,201,167,0.4);}
+.btn-outline{background:transparent;border:1px solid var(--glass-border);color:#fff;}
+.btn-outline:hover{background:var(--glass);}
+
+/* ── LAYOUT ── */
+.app-layout{
+  display:grid;
+  grid-template-columns:240px 1fr 280px;
+  gap:20px; max-width:1440px;
+  margin:0 auto; padding:24px 20px;
 }
-.app-layout {
-  display: grid;
-  grid-template-columns: 260px 1fr 300px;
-  gap: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 28px 24px;
+@media(max-width:1200px){
+  .app-layout{grid-template-columns:1fr;}
+  .sidebar-left,.sidebar-right{display:none!important;}
+  .floating-bar{display:flex!important;}
 }
-@media (max-width:1200px) {
-  .app-layout { grid-template-columns: 1fr; }
-  .sidebar-left, .sidebar-right { display:none; }
+@media(max-width:600px){
+  .header .logo-text p,.logo-text .builder{display:none;}
 }
-.glass-card {
-  background: var(--glass);
-  backdrop-filter: blur(18px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: var(--card-shadow);
+
+/* ── GLASS CARD ── */
+.glass-card{
+  background:var(--glass); backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border); border-radius:20px;
+  padding:22px; box-shadow:var(--card-shadow);
 }
-.nav-item {
-  display:flex; align-items:center; gap:12px;
-  padding:12px 16px; border-radius:12px; cursor:pointer;
-  transition:all 0.2s; color:rgba(255,255,255,0.8); font-size:14px;
+
+/* ── SIDEBAR NAV ── */
+.sidebar-title{font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;padding-left:4px;}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 14px;border-radius:12px;cursor:pointer;
+  transition:all 0.2s;color:rgba(255,255,255,0.7);
+  font-size:13.5px;font-weight:500;margin-bottom:4px;
+  border:1px solid transparent;
 }
-.nav-item:hover, .nav-item.active {
-  background:rgba(0,201,167,0.15); color:#fff;
-  border-left:3px solid var(--accent);
+.nav-item i{width:18px;text-align:center;font-size:14px;}
+.nav-item:hover{background:rgba(0,201,167,0.1);color:#fff;border-color:rgba(0,201,167,0.2);}
+.nav-item.active{background:rgba(0,201,167,0.15);color:#fff;border-color:rgba(0,201,167,0.35);border-left:3px solid var(--accent);}
+.nav-divider{height:1px;background:var(--glass-border);margin:12px 0;}
+.progress-mini{margin-top:16px;}
+.progress-mini label{font-size:12px;color:rgba(255,255,255,0.5);display:flex;justify-content:space-between;margin-bottom:5px;}
+.progress-bar-wrap{background:rgba(255,255,255,0.08);border-radius:6px;height:6px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--primary));transition:width 0.5s;}
+
+/* ── SECTION PAGES ── */
+.section-page{display:none;}
+.section-page.active{display:block;}
+
+/* ── SCORE BANNER ── */
+.score-banner{
+  display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;
 }
-.community-btn {
-  display:flex; align-items:center; gap:12px;
-  padding:13px 16px; border-radius:14px;
-  text-decoration:none; font-size:14px; font-weight:600;
-  transition:all 0.2s; border:1px solid rgba(255,255,255,0.1);
-  margin-bottom: 10px;
+.score-card{
+  flex:1;min-width:90px;
+  background:rgba(255,255,255,0.06);border:1px solid var(--glass-border);
+  border-radius:14px;padding:14px 16px;text-align:center;
 }
-.community-btn.whatsapp  { background:rgba(37,211,102,0.12); color:#25d366; }
-.community-btn.linkedin  { background:rgba(0,119,181,0.15); color:#0af; }
-.option-btn {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 14px; padding: 16px 20px;
-  color:#fff; font-size:15px; cursor:pointer;
-  text-align:left; transition:all 0.25s;
-  display:flex; align-items:center; gap:12px;
-  width: 100%;
-  margin-bottom: 10px;
+.score-card .val{font-size:26px;font-weight:800;color:var(--accent);}
+.score-card .lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;}
+
+/* ── QUIZ ── */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.topic-badge{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  background:rgba(0,201,167,0.15);color:var(--accent);
+  padding:4px 12px;border-radius:20px;border:1px solid rgba(0,201,167,0.3);
 }
-.explanation-box {
-  background: rgba(0,201,167,0.1); border:1px solid rgba(0,201,167,0.3);
-  border-radius:14px; padding:16px 20px; margin-top:16px;
-  font-size:14px; line-height:1.7; display:none;
+.q-counter{font-size:13px;color:rgba(255,255,255,0.5);}
+.progress-quiz{height:4px;background:rgba(255,255,255,0.08);border-radius:4px;margin-bottom:20px;overflow:hidden;}
+.progress-quiz-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--primary));border-radius:4px;transition:width 0.4s;}
+.question-text{font-size:17px;font-weight:600;line-height:1.6;margin-bottom:22px;color:#fff;}
+.options-grid{display:flex;flex-direction:column;gap:10px;}
+.option-btn{
+  background:rgba(255,255,255,0.05);
+  border:1.5px solid rgba(255,255,255,0.12);
+  border-radius:14px;padding:14px 18px;
+  color:#fff;font-size:14px;cursor:pointer;
+  text-align:left;transition:all 0.22s;
+  display:flex;align-items:center;gap:14px;width:100%;
 }
-.modal-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,0.75);
-  backdrop-filter:blur(8px); z-index:1000;
-  display:none; align-items:center; justify-content:center;
-  padding:20px;
+.option-btn .opt-letter{
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(255,255,255,0.08);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;flex-shrink:0;
+  border:1px solid rgba(255,255,255,0.15);
 }
-.modal-overlay.open { display:flex; }
-.modal-box {
-  background:linear-gradient(135deg,#0d2a40,#1a3a5c);
-  border:1px solid var(--glass-border); border-radius:24px;
-  padding:36px; max-width:500px; width:100%;
+.option-btn:hover:not(:disabled){background:rgba(0,201,167,0.1);border-color:rgba(0,201,167,0.35);transform:translateX(3px);}
+.option-btn.correct{background:rgba(0,201,167,0.18)!important;border-color:var(--correct)!important;color:var(--correct)!important;}
+.option-btn.correct .opt-letter{background:var(--correct);color:#000;border-color:var(--correct);}
+.option-btn.wrong{background:rgba(247,37,133,0.15)!important;border-color:var(--wrong)!important;color:var(--wrong)!important;}
+.option-btn.wrong .opt-letter{background:var(--wrong);color:#fff;border-color:var(--wrong);}
+.option-btn:disabled{cursor:default;}
+.explanation-box{
+  background:rgba(0,201,167,0.08);border:1px solid rgba(0,201,167,0.25);
+  border-radius:14px;padding:16px 18px;margin-top:16px;
+  font-size:13.5px;line-height:1.7;display:none;
+  animation:fadeIn 0.3s ease;
 }
-.floating-bar {
-  position:fixed; bottom:0; left:0; right:0;
-  background:rgba(13,27,42,0.95); backdrop-filter:blur(20px);
-  border-top:1px solid var(--glass-border); padding:12px 20px;
-  display:none; gap:10px; z-index:50;
+.explanation-box .exp-title{font-weight:700;color:var(--accent);margin-bottom:6px;font-size:12px;text-transform:uppercase;letter-spacing:1px;}
+.quiz-footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center;}
+.btn-report{background:none;border:1px solid rgba(247,37,133,0.4);color:var(--danger);padding:7px 14px;border-radius:20px;cursor:pointer;font-size:12px;transition:all 0.2s;}
+.btn-report:hover{background:rgba(247,37,133,0.1);}
+.btn-next{background:linear-gradient(135deg,var(--accent),var(--primary));border:none;color:#fff;padding:10px 24px;border-radius:22px;cursor:pointer;font-size:14px;font-weight:600;display:none;transition:all 0.2s;}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,201,167,0.4);}
+
+/* ── RESULTS SCREEN ── */
+.results-screen{text-align:center;padding:20px 0;display:none;}
+.results-screen .big-score{font-size:64px;font-weight:900;color:var(--accent);}
+.results-screen .score-label{font-size:16px;color:rgba(255,255,255,0.6);margin-bottom:20px;}
+.results-screen .result-grid{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+.result-stat{background:rgba(255,255,255,0.07);border-radius:14px;padding:16px 24px;text-align:center;}
+.result-stat .rv{font-size:28px;font-weight:800;}
+.result-stat .rl{font-size:12px;color:rgba(255,255,255,0.5);margin-top:3px;}
+.rv.green{color:var(--correct);}
+.rv.red{color:var(--wrong);}
+.btn-restart{background:linear-gradient(135deg,var(--accent),var(--primary));border:none;color:#fff;padding:12px 32px;border-radius:24px;cursor:pointer;font-size:15px;font-weight:700;margin-top:6px;}
+
+/* ── TOPIC SELECTOR ── */
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.topic-card{
+  background:rgba(255,255,255,0.06);border:1px solid var(--glass-border);
+  border-radius:16px;padding:18px 16px;cursor:pointer;transition:all 0.22s;
+  text-align:center;
+}
+.topic-card:hover{background:rgba(0,201,167,0.1);border-color:rgba(0,201,167,0.35);transform:translateY(-2px);}
+.topic-card.selected{background:rgba(0,201,167,0.15);border-color:var(--accent);}
+.topic-card .tc-icon{font-size:28px;margin-bottom:8px;}
+.topic-card .tc-title{font-size:13px;font-weight:700;color:#fff;}
+.topic-card .tc-count{font-size:11px;color:rgba(255,255,255,0.45);margin-top:3px;}
+
+/* ── CLINICAL CASES ── */
+.case-grid{display:flex;flex-direction:column;gap:10px;}
+.case-card{
+  background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);
+  border-radius:14px;padding:14px 18px;cursor:pointer;
+  transition:all 0.22s;display:flex;align-items:center;gap:14px;
+}
+.case-card:hover{background:rgba(0,201,167,0.08);border-color:rgba(0,201,167,0.3);transform:translateX(3px);}
+.case-num{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--primary));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:13px;flex-shrink:0;
+}
+.case-info .ct{font-size:14px;font-weight:600;color:#fff;}
+.case-info .cs{font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;}
+.case-arrow{margin-left:auto;color:var(--accent);opacity:0.6;}
+
+/* ── CASE DETAIL MODAL ── */
+.case-detail{padding:0;}
+.case-detail h3{font-size:18px;font-weight:700;margin-bottom:4px;}
+.case-detail .case-tag{font-size:11px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;display:block;}
+.case-section{margin-bottom:16px;}
+.case-section h4{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.case-section ul{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.case-section ul li{font-size:13.5px;color:rgba(255,255,255,0.85);padding-left:16px;position:relative;line-height:1.5;}
+.case-section ul li::before{content:'›';position:absolute;left:0;color:var(--accent);font-weight:700;}
+
+/* ── REFERENCES ── */
+.ref-category{margin-bottom:24px;}
+.ref-category h4{font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.ref-list{display:flex;flex-direction:column;gap:8px;}
+.ref-item{
+  background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);
+  border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;
+  text-decoration:none;transition:all 0.2s;
+}
+.ref-item:hover{background:rgba(0,201,167,0.08);border-color:rgba(0,201,167,0.3);}
+.ref-item .ri-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.ref-item .ri-info .rt{font-size:13.5px;font-weight:600;color:#fff;}
+.ref-item .ri-info .rs{font-size:11.5px;color:rgba(255,255,255,0.45);margin-top:2px;}
+.ref-item .ri-arrow{margin-left:auto;color:rgba(255,255,255,0.25);font-size:12px;}
+
+/* ── CEPHALOMETRICS ── */
+.ceph-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.ceph-tab{
+  background:rgba(255,255,255,0.06);border:1px solid var(--glass-border);
+  border-radius:22px;padding:7px 18px;cursor:pointer;
+  font-size:13px;color:rgba(255,255,255,0.65);transition:all 0.2s;
+}
+.ceph-tab.active,.ceph-tab:hover{background:rgba(0,201,167,0.15);border-color:rgba(0,201,167,0.4);color:#fff;}
+.ceph-table{width:100%;border-collapse:collapse;}
+.ceph-table th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.45);padding:10px 12px;text-align:left;border-bottom:1px solid var(--glass-border);}
+.ceph-table td{padding:10px 12px;font-size:13px;color:rgba(255,255,255,0.85);border-bottom:1px solid rgba(255,255,255,0.05);}
+.ceph-table tr:hover td{background:rgba(255,255,255,0.03);}
+.ceph-val{font-weight:700;color:var(--accent);}
+.ceph-normal{font-size:12px;color:rgba(255,255,255,0.45);}
+
+/* ── COMMUNITY SIDEBAR ── */
+.community-btn{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;border-radius:13px;
+  text-decoration:none;font-size:13px;font-weight:600;
+  transition:all 0.2s;border:1px solid rgba(255,255,255,0.08);
+  margin-bottom:9px;
+}
+.community-btn.whatsapp{background:rgba(37,211,102,0.1);color:#25d366;}
+.community-btn.whatsapp:hover{background:rgba(37,211,102,0.2);border-color:rgba(37,211,102,0.3);}
+.community-btn.linkedin{background:rgba(0,119,181,0.12);color:#0af;}
+.community-btn.linkedin:hover{background:rgba(0,119,181,0.2);border-color:rgba(0,170,255,0.3);}
+.sidebar-right-section{margin-top:18px;}
+.sidebar-right-section h4{font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
+.exam-link-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:11px;cursor:pointer;
+  text-decoration:none;font-size:12.5px;color:rgba(255,255,255,0.7);
+  background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);
+  margin-bottom:7px;transition:all 0.2s;
+}
+.exam-link-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.exam-link-item i{color:var(--accent);width:16px;text-align:center;}
+
+/* ── MODALS ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(10px);z-index:1000;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:linear-gradient(135deg,#0c2035,#112d40);
+  border:1px solid var(--glass-border);border-radius:24px;
+  padding:32px;max-width:560px;width:100%;
+  max-height:90vh;overflow-y:auto;
+  animation:slideUp 0.3s ease;
+}
+.modal-box::-webkit-scrollbar{width:4px;}
+.modal-box::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:4px;}
+@keyframes slideUp{from{transform:translateY(24px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
+.modal-close{background:rgba(255,255,255,0.08);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:rgba(255,255,255,0.15);}
+.form-group{margin-bottom:16px;}
+.form-group label{font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;}
+.form-input{
+  width:100%;background:rgba(255,255,255,0.07);
+  border:1px solid var(--glass-border);border-radius:12px;
+  padding:11px 14px;color:#fff;font-size:14px;
+  font-family:inherit;transition:border-color 0.2s;
+}
+.form-input:focus{outline:none;border-color:var(--accent);}
+.form-select{appearance:none;}
+.btn-submit{
+  width:100%;background:linear-gradient(135deg,var(--accent),var(--primary));
+  border:none;color:#fff;padding:13px;border-radius:14px;
+  font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:6px;
+}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,201,167,0.4);}
+.success-msg{background:rgba(0,201,167,0.1);border:1px solid rgba(0,201,167,0.3);border-radius:12px;padding:14px;text-align:center;font-size:14px;color:var(--accent);display:none;}
+
+/* ── FLOATING BAR ── */
+.floating-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(7,17,26,0.97);backdrop-filter:blur(20px);
+  border-top:1px solid var(--glass-border);
+  padding:10px 20px;display:none;gap:8px;z-index:150;
   justify-content:center;
 }
-@media (max-width:1200px) { .floating-bar { display:flex; } }
+.floating-bar .community-btn{margin-bottom:0;font-size:12px;padding:9px 14px;}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;padding:24px 20px;
+  font-size:12px;color:rgba(255,255,255,0.3);
+  border-top:1px solid var(--glass-border);
+  margin-top:20px;
+}
+footer strong{color:rgba(255,255,255,0.55);}
+
+/* ── BADGE ── */
+.world-first-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,rgba(240,165,0,0.15),rgba(240,165,0,0.05));
+  border:1px solid rgba(240,165,0,0.35);border-radius:20px;
+  padding:4px 14px;font-size:11px;font-weight:700;color:var(--gold);
+  margin-bottom:14px;
+}
 </style>
 </head>
 <body>
-<script>
-  const WA_AI_ORTHO      = 'https://chat.whatsapp.com/JdJbzUIiVPlE2aEQI7Z2qd';
-  const WA_MORTH_BUDDY   = 'https://chat.whatsapp.com/BmlKwHA9xpi9i50iCM6yid';
-  const LINKEDIN_URL     = 'https://www.linkedin.com/in/dr-ajay-kubavat-708205210';
-</script>
+
+<!-- HEADER -->
 <header class="header">
   <div class="logo">
     <div class="logo-icon">🦷</div>
     <div class="logo-text">
-      <h1>Morth Buddy</h1>
-      <p>AI Orthodontics Learning Platform</p>
+      <h1>MOrth Buddy</h1>
+      <p>World's First AI-Powered MOrth RCS Exam Prep Platform</p>
+      <div class="builder">Built by <strong>Dr. Ajay Kubavat</strong> | AI in Orthodontics</div>
     </div>
   </div>
-  <div class="header-actions">
-    <button class="btn-register" onclick="openModal('registerModal')">📝 Register Free</button>
+  <div class="header-right">
+    <button class="btn btn-outline" onclick="openModal('loginModal')"><i class="fas fa-sign-in-alt"></i> Login</button>
+    <button class="btn btn-primary" onclick="openModal('registerModal')">📝 Register Free</button>
   </div>
 </header>
+
+<!-- APP LAYOUT -->
 <div class="app-layout">
+
+  <!-- LEFT SIDEBAR -->
   <aside class="sidebar-left">
-    <div class="glass-card">
-      <div class="nav-item active"><i class="fas fa-brain"></i> MCQ Practice</div>
-      <div class="nav-item"><i class="fas fa-chart-line"></i> Cephalometrics</div>
-      <div class="nav-item"><i class="fas fa-robot"></i> AI in Ortho</div>
-    </div>
-  </aside>
-  <main class="main-content">
-    <div class="glass-card">
-      <h2 id="questionText">Loading...</h2>
-      <div id="optionsGrid"></div>
-      <div class="explanation-box" id="explanationBox"></div>
-      <div style="margin-top:20px; display:flex; justify-content:space-between;">
-        <button onclick="openModal('reportModal')" style="background:none; border:1px solid #f72585; color:#f72585; padding:8px 15px; border-radius:20px; cursor:pointer;">🚩 Report Error</button>
-        <button id="nextBtn" style="display:none; background:var(--accent); border:none; color:white; padding:10px 20px; border-radius:20px; cursor:pointer;" onclick="nextQuestion()">Next →</button>
+    <div class="glass-card" style="position:sticky;top:86px;">
+      <div class="sidebar-title">Navigation</div>
+      <div class="nav-item active" id="nav-mcq" onclick="switchSection('mcq')"><i class="fas fa-brain"></i> MCQ Practice</div>
+      <div class="nav-item" id="nav-cases" onclick="switchSection('cases')"><i class="fas fa-stethoscope"></i> Clinical Cases</div>
+      <div class="nav-item" id="nav-ceph" onclick="switchSection('ceph')"><i class="fas fa-ruler-combined"></i> Cephalometrics</div>
+      <div class="nav-item" id="nav-refs" onclick="switchSection('refs')"><i class="fas fa-book-open"></i> References</div>
+      <div class="nav-divider"></div>
+      <div class="sidebar-title">Your Progress</div>
+      <div class="progress-mini">
+        <label>MCQ Mastery <span id="mastPct">0%</span></label>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="mastBar" style="width:0%"></div></div>
+      </div>
+      <div class="progress-mini" style="margin-top:10px;">
+        <label>Questions Done <span id="qDone">0</span></label>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="qDoneBar" style="width:0%;background:linear-gradient(90deg,var(--gold),#e07b00)"></div></div>
       </div>
     </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- ── MCQ SECTION ── -->
+    <div class="section-page active" id="section-mcq">
+      <!-- Score Banner -->
+      <div class="score-banner">
+        <div class="score-card"><div class="val" id="sc-total">0</div><div class="lbl">Answered</div></div>
+        <div class="score-card"><div class="val" id="sc-correct" style="color:var(--correct)">0</div><div class="lbl">Correct</div></div>
+        <div class="score-card"><div class="val" id="sc-wrong" style="color:var(--wrong)">0</div><div class="lbl">Wrong</div></div>
+        <div class="score-card"><div class="val" id="sc-pct">—</div><div class="lbl">Score %</div></div>
+      </div>
+
+      <!-- Topic Selector -->
+      <div class="glass-card" id="topicSelector">
+        <div class="world-first-badge"><i class="fas fa-star"></i> World's First AI-Powered MOrth Prep</div>
+        <h3 style="margin-bottom:6px;">Choose a Topic to Practice</h3>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:18px;">Select any topic or practice all questions in mixed mode.</p>
+        <div class="topic-grid">
+          <div class="topic-card" onclick="startQuiz('all')"><div class="tc-icon">🎯</div><div class="tc-title">All Topics (Mixed)</div><div class="tc-count" id="tc-all"></div></div>
+          <div class="topic-card" onclick="startQuiz('Growth &amp; Development')"><div class="tc-icon">📈</div><div class="tc-title">Growth &amp; Development</div><div class="tc-count" id="tc-growth"></div></div>
+          <div class="topic-card" onclick="startQuiz('Biomechanics')"><div class="tc-icon">⚙️</div><div class="tc-title">Biomechanics</div><div class="tc-count" id="tc-bio"></div></div>
+          <div class="topic-card" onclick="startQuiz('Clinical Orthodontics')"><div class="tc-icon">🦷</div><div class="tc-title">Clinical Orthodontics</div><div class="tc-count" id="tc-clin"></div></div>
+          <div class="topic-card" onclick="startQuiz('Cephalometrics')"><div class="tc-icon">📐</div><div class="tc-title">Cephalometrics &amp; Diagnosis</div><div class="tc-count" id="tc-ceph"></div></div>
+          <div class="topic-card" onclick="startQuiz('Appliances')"><div class="tc-icon">🔧</div><div class="tc-title">Appliances &amp; Materials</div><div class="tc-count" id="tc-app"></div></div>
+        </div>
+      </div>
+
+      <!-- Active Quiz -->
+      <div class="glass-card" id="quizBox" style="display:none;">
+        <div class="quiz-header">
+          <span class="topic-badge" id="quizTopicBadge">Topic</span>
+          <span class="q-counter" id="qCounter">Q 1 / 30</span>
+        </div>
+        <div class="progress-quiz"><div class="progress-quiz-fill" id="quizProgress" style="width:0%"></div></div>
+        <div class="question-text" id="questionText">Loading...</div>
+        <div class="options-grid" id="optionsGrid"></div>
+        <div class="explanation-box" id="explanationBox">
+          <div class="exp-title">📚 Explanation</div>
+          <div id="expText"></div>
+        </div>
+        <div class="quiz-footer">
+          <button class="btn-report" onclick="triggerReport()">🚩 Report Error</button>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <button class="btn btn-outline" onclick="exitQuiz()" style="padding:8px 16px;font-size:13px;">← Topics</button>
+            <button class="btn-next" id="nextBtn" onclick="nextQuestion()">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Screen -->
+      <div class="glass-card results-screen" id="resultsScreen">
+        <div style="font-size:40px;margin-bottom:10px;">🎉</div>
+        <div class="big-score" id="resBigScore">0%</div>
+        <div class="score-label" id="resLabel">Quiz Complete</div>
+        <div class="result-grid">
+          <div class="result-stat"><div class="rv green" id="resCorrect">0</div><div class="rl">Correct</div></div>
+          <div class="result-stat"><div class="rv red" id="resWrong">0</div><div class="rl">Wrong</div></div>
+          <div class="result-stat"><div class="rv" id="resTotal">0</div><div class="rl">Total</div></div>
+        </div>
+        <button class="btn-restart" onclick="exitQuiz()">← Back to Topics</button>
+      </div>
+    </div>
+
+    <!-- ── CLINICAL CASES SECTION ── -->
+    <div class="section-page" id="section-cases">
+      <div class="glass-card">
+        <h2 style="margin-bottom:6px;">Clinical Case Library</h2>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:20px;">16 high-yield orthodontic cases — click any case to view full management details.</p>
+        <div class="case-grid" id="caseGrid"></div>
+      </div>
+    </div>
+
+    <!-- ── CEPHALOMETRICS SECTION ── -->
+    <div class="section-page" id="section-ceph">
+      <div class="glass-card">
+        <h2 style="margin-bottom:16px;">Cephalometric Reference Guide</h2>
+        <div class="ceph-tabs" id="cephTabs"></div>
+        <div id="cephContent"></div>
+      </div>
+    </div>
+
+    <!-- ── REFERENCES SECTION ── -->
+    <div class="section-page" id="section-refs">
+      <div class="glass-card">
+        <h2 style="margin-bottom:6px;">Reference Library</h2>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:20px;">Essential study materials, textbooks, and RCS exam guidance.</p>
+        <div id="refsContent"></div>
+      </div>
+    </div>
+
   </main>
+
+  <!-- RIGHT SIDEBAR -->
   <aside class="sidebar-right">
-    <div class="glass-card">
-      <h3>Community</h3>
-      <a id="waAiLink" href="#" target="_blank" class="community-btn whatsapp"><i class="fab fa-whatsapp"></i> AI in Ortho</a>
-      <a id="waMorthLink" href="#" target="_blank" class="community-btn whatsapp"><i class="fab fa-whatsapp"></i> Morth Buddy</a>
-      <a id="liLink" href="#" target="_blank" class="community-btn linkedin"><i class="fab fa-linkedin"></i> LinkedIn</a>
+    <div class="glass-card" style="position:sticky;top:86px;">
+      <h3 style="margin-bottom:14px;font-size:15px;">Community</h3>
+      <a href="https://chat.whatsapp.com/JdJbzUIiVPlE2aEQI7Z2qd" target="_blank" class="community-btn whatsapp"><i class="fab fa-whatsapp"></i> AI in Ortho Group</a>
+      <a href="https://chat.whatsapp.com/BmlKwHA9xpi9i50iCM6yid" target="_blank" class="community-btn whatsapp"><i class="fab fa-whatsapp"></i> MOrth Buddy Group</a>
+      <a href="https://www.linkedin.com/in/dr-ajay-kubavat-708205210" target="_blank" class="community-btn linkedin"><i class="fab fa-linkedin"></i> Dr. Ajay Kubavat</a>
+
+      <div class="sidebar-right-section">
+        <h4>RCS Exam Links</h4>
+        <a href="https://www.rcsed.ac.uk/education-and-examinations/examinations/orthodontics-examinations/membership-in-orthodontics-morth" target="_blank" class="exam-link-item"><i class="fas fa-external-link-alt"></i> RCSEd MOrth Overview</a>
+        <a href="https://www.rcsed.ac.uk/education-and-examinations/examinations/orthodontics-examinations/membership-in-orthodontics-morth/morth-part-1" target="_blank" class="exam-link-item"><i class="fas fa-external-link-alt"></i> MOrth Part 1 Info</a>
+        <a href="https://www.rcsed.ac.uk/education-and-examinations/examinations/orthodontics-examinations/membership-in-orthodontics-morth/morth-part-2" target="_blank" class="exam-link-item"><i class="fas fa-external-link-alt"></i> MOrth Part 2 Info</a>
+        <a href="https://www.rcsed.ac.uk/education-and-examinations/examinations/orthodontics-examinations/membership-in-orthodontics-morth/morth-dates-and-fees" target="_blank" class="exam-link-item"><i class="fas fa-calendar-alt"></i> Exam Dates &amp; Fees</a>
+      </div>
+
+      <div class="sidebar-right-section">
+        <h4>Quick Stats</h4>
+        <div style="font-size:13px;color:rgba(255,255,255,0.6);line-height:2;">
+          <div>📝 <span id="qs-total-q">—</span> Questions</div>
+          <div>🏥 16 Clinical Cases</div>
+          <div>📐 5 Ceph Analyses</div>
+          <div>📚 30+ References</div>
+        </div>
+      </div>
     </div>
   </aside>
 </div>
-<div class="floating-bar">
-  <a id="waMobile" href="#" target="_blank" class="community-btn whatsapp">AI Ortho</a>
-  <a id="liMobile" href="#" target="_blank" class="community-btn linkedin">LinkedIn</a>
+
+<!-- FLOATING MOBILE BAR -->
+<div class="floating-bar" id="floatingBar">
+  <a href="https://chat.whatsapp.com/JdJbzUIiVPlE2aEQI7Z2qd" target="_blank" class="community-btn whatsapp"><i class="fab fa-whatsapp"></i> AI Ortho</a>
+  <a href="https://chat.whatsapp.com/BmlKwHA9xpi9i50iCM6yid" target="_blank" class="community-btn whatsapp"><i class="fab fa-whatsapp"></i> MOrth Group</a>
+  <a href="https://www.linkedin.com/in/dr-ajay-kubavat-708205210" target="_blank" class="community-btn linkedin"><i class="fab fa-linkedin"></i> LinkedIn</a>
 </div>
+
+<!-- REGISTER MODAL -->
 <div class="modal-overlay" id="registerModal">
   <div class="modal-box">
-    <h2>Register</h2>
-    <p>Submit details for approval.</p>
-    <button onclick="closeModal('registerModal')">Close</button>
+    <div class="modal-header">
+      <div><h2 style="font-size:20px;">Register for MOrth Buddy</h2><p style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">Free access — pending approval by Dr. Ajay Kubavat</p></div>
+      <button class="modal-close" onclick="closeModal('registerModal')">✕</button>
+    </div>
+    <div id="regForm">
+      <div class="form-group"><label>Full Name *</label><input class="form-input" id="reg-name" placeholder="Dr. John Smith" type="text"></div>
+      <div class="form-group"><label>Email Address *</label><input class="form-input" id="reg-email" placeholder="john@example.com" type="email"></div>
+      <div class="form-group"><label>Institution / University *</label><input class="form-input" id="reg-inst" placeholder="University of Edinburgh" type="text"></div>
+      <div class="form-group"><label>Country</label><input class="form-input" id="reg-country" placeholder="United Kingdom" type="text"></div>
+      <div class="form-group"><label>Training Stage</label>
+        <select class="form-input form-select" id="reg-stage">
+          <option value="">Select...</option>
+          <option>Dental Student</option>
+          <option>General Dental Practitioner</option>
+          <option>Orthodontic Trainee / Resident</option>
+          <option>Specialist Orthodontist</option>
+          <option>Academic / Researcher</option>
+        </select>
+      </div>
+      <button class="btn-submit" onclick="submitRegister()">🚀 Submit for Approval</button>
+    </div>
+    <div class="success-msg" id="regSuccess">✅ Registration submitted! Dr. Ajay Kubavat will review and approve your access. You'll receive a confirmation email shortly.</div>
   </div>
 </div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div><h2 style="font-size:20px;">Login</h2><p style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">Access your MOrth Buddy account</p></div>
+      <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    </div>
+    <div class="form-group"><label>Email Address</label><input class="form-input" id="login-email" placeholder="your@email.com" type="email"></div>
+    <div class="form-group"><label>Password</label><input class="form-input" id="login-pass" placeholder="••••••••" type="password"></div>
+    <button class="btn-submit" onclick="submitLogin()">Login</button>
+    <p style="text-align:center;font-size:13px;color:rgba(255,255,255,0.45);margin-top:14px;">No account? <span style="color:var(--accent);cursor:pointer;" onclick="closeModal('loginModal');openModal('registerModal')">Register Free →</span></p>
+  </div>
+</div>
+
+<!-- REPORT MODAL -->
 <div class="modal-overlay" id="reportModal">
   <div class="modal-box">
-    <h2>Report Error</h2>
-    <textarea id="errorDetails" style="width:100%; height:100px; margin:10px 0;" placeholder="What is wrong?"></textarea>
-    <button onclick="closeModal('reportModal')">Submit</button>
+    <div class="modal-header">
+      <div><h2 style="font-size:20px;">🚩 Report an Error</h2><p style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">Help us maintain accuracy</p></div>
+      <button class="modal-close" onclick="closeModal('reportModal')">✕</button>
+    </div>
+    <div class="form-group"><label>Question (auto-filled)</label><input class="form-input" id="reportQText" readonly></div>
+    <div class="form-group"><label>What is wrong?</label>
+      <select class="form-input form-select" id="reportType">
+        <option>Wrong answer key</option>
+        <option>Incorrect explanation</option>
+        <option>Outdated information</option>
+        <option>Typo / grammar error</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Details (optional)</label><textarea class="form-input" id="reportDetails" rows="3" placeholder="Describe the issue..."></textarea></div>
+    <button class="btn-submit" onclick="submitReport()">📧 Submit Report</button>
   </div>
 </div>
+
+<!-- CASE DETAIL MODAL -->
+<div class="modal-overlay" id="caseModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div id="caseModalHeader"></div>
+      <button class="modal-close" onclick="closeModal('caseModal')">✕</button>
+    </div>
+    <div id="caseModalBody" class="case-detail"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>© 2026 MOrth Buddy</strong> | <strong>Dr. Ajay Kubavat</strong> | Open Source for Orthodontic Excellence<br>
+  <span style="font-size:11px;">Built with ❤️ for Orthodontists worldwide | <a href="https://github.com/kubavatajay/morth-buddy" target="_blank" style="color:rgba(255,255,255,0.4);">GitHub</a></span>
+</footer>
+
 <script>
-  document.getElementById('waAiLink').href = WA_AI_ORTHO;
-  document.getElementById('waMorthLink').href = WA_MORTH_BUDDY;
-  document.getElementById('liLink').href = LINKEDIN_URL;
-  document.getElementById('waMobile').href = WA_AI_ORTHO;
-  document.getElementById('liMobile').href = LINKEDIN_URL;
-  const questions = [
-    { q: "According to Scammon's growth curves, which tissue reaches 200% size at 10 years?", options: ["Neural", "Somatic", "Genital", "Lymphatic"], correct: 3, exp: "Lymphatic tissue undergoes excessive growth in childhood before involuting." },
-    { q: "Wits appraisal uses which reference plane?", options: ["FH Plane", "SN Plane", "Occlusal Plane", "Mandibular Plane"], correct: 2, exp: "Wits uses the functional occlusal plane." }
-  ];
-  let currentQ = 0;
-  function loadQuestion() {
-    const q = questions[currentQ];
-    document.getElementById('questionText').innerText = q.q;
-    const grid = document.getElementById('optionsGrid');
-    grid.innerHTML = '';
-    q.options.forEach((opt, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'option-btn';
-      btn.innerText = opt;
-      btn.onclick = () => {
-        document.getElementById('explanationBox').style.display = 'block';
-        document.getElementById('explanationBox').innerText = q.exp;
-        document.getElementById('nextBtn').style.display = 'block';
-      };
-      grid.appendChild(btn);
-    });
-  }
-  function nextQuestion() {
-    currentQ = (currentQ + 1) % questions.length;
-    document.getElementById('explanationBox').style.display = 'none';
-    document.getElementById('nextBtn').style.display = 'none';
-    loadQuestion();
-  }
-  function openModal(id) { document.getElementById(id).classList.add('open'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-  loadQuestion();
+// ═══════════════════════════════════════════════
+// QUESTION BANK — 120 high-yield MOrth MCQs
+// ═══════════════════════════════════════════════
+const QUESTIONS = [
+  // ── GROWTH & DEVELOPMENT ──
+  {t:"Growth & Development", q:"According to Scammon's growth curves, which tissue reaches ~200% size at age 6-7 before involuting?", o:["Neural","Somatic","Genital","Lymphoid"], c:3, e:"Lymphoid tissue (tonsils, adenoids) is massively enlarged in early childhood and then involutes. Neural tissue reaches adult size early but not 200%; Somatic follows the general S-curve."},
+  {t:"Growth & Development", q:"The Cervical Vertebral Maturation (CVM) method uses which bones to assess skeletal maturity?", o:["C1–C4 vertebrae","C2–C4 vertebrae","C3–C5 vertebrae","C1–C3 vertebrae"], c:1, e:"Baccetti's CVM method assesses C2, C3 and C4 cervical vertebrae for concavities and body shape changes to estimate the pubertal growth peak."},
+  {t:"Growth & Development", q:"In CVM staging, the peak of mandibular growth occurs at which stage?", o:["CS1","CS2","CS3","CS4"], c:2, e:"CS3 corresponds to the onset of the pubertal peak. Maximum mandibular growth occurs between CS3 and CS4 according to Baccetti et al."},
+  {t:"Growth & Development", q:"The Bolton norm for overall tooth-size ratio (maxillary : mandibular) is approximately:", o:["77.2%","80.4%","91.3%","95.1%"], c:2, e:"Bolton's overall ratio compares the sum of all 12 mandibular teeth to all 12 maxillary teeth. The norm is 91.3 ± 1.91%."},
+  {t:"Growth & Development", q:"Mandibular condylar growth direction is primarily:", o:["Inferior","Superior and posterior","Superior and anterior","Lateral"], c:2, e:"The condyle grows superiorly and posteriorly, translating the mandible anteriorly and inferiorly — producing downward and forward displacement."},
+  {t:"Growth & Development", q:"The mid-palatal suture typically fuses (becomes ossified) at approximately:", o:["10–12 years","15–17 years","22–27 years","35+ years"], c:2, e:"The mid-palatal suture shows interdigitation from about 14–15 years and is usually fused by the mid-20s (22–27 years), which determines the feasibility of tooth-borne RME."},
+  {t:"Growth & Development", q:"Which Bjork structural sign is most predictive of a horizontal growth rotation?", o:["Condylar head shape","Anterior inclination of condyle","Dense anterior cortex of the symphysis","Curved mandibular canal"], c:3, e:"A dense and thick anterior cortex at the symphysis is one of Björk's most reliable implant study signs of horizontal (anterior) growth rotation."},
+  {t:"Growth & Development", q:"Bass (1983) classification of growth rotation includes which two types?", o:["True and matrix rotation","Intramatrix and total rotation","Complete and incomplete rotation","Forward and backward rotation"], c:1, e:"Bass distinguished intramatrix rotation (within the masticatory matrix) and total rotation (of the jaw relative to cranial base)."},
+  {t:"Growth & Development", q:"The nasomaxillary complex moves in which direction during growth?", o:["Upward and backward","Downward and forward","Upward and forward","Downward and backward"], c:1, e:"The nasomaxillary complex is displaced downward and forward by suture growth and surface deposition, while resorption occurs anteriorly and superiorly."},
+  {t:"Growth & Development", q:"Enlow's 'counterpart' principle states that:", o:["Suture growth mirrors condylar growth","Each jaw unit has a structural equivalent in the opposing jaw and cranial base","Anterior facial height equals posterior facial height","Molar eruption drives vertical growth"], c:1, e:"Enlow's counterpart concept: each anatomic region of one jaw has a structural counterpart in the other jaw or cranial base, and they must grow proportionately for facial balance."},
+  {t:"Growth & Development", q:"Peak height velocity (PHV) in girls occurs on average at:", o:["10 years","12 years","14 years","16 years"], c:1, e:"Girls reach PHV at approximately 12 years (range 10–14), roughly 2 years earlier than boys who peak around 14 years."},
+  {t:"Growth & Development", q:"The spheno-occipital synchondrosis fuses at approximately:", o:["10–12 years","13–16 years","17–22 years","25–30 years"], c:2, e:"The spheno-occipital synchondrosis is the primary site of cranial base length increase and typically fuses between 17–22 years (slightly earlier in girls)."},
+  {t:"Growth & Development", q:"Which structure acts as the 'functional matrix' for alveolar bone development?", o:["The teeth","The periosteum","The periodontal ligament","The dental follicle"], c:2, e:"Moss's functional matrix theory: the alveolar process grows in response to the presence and eruption forces transmitted through the periodontal ligament (the functional matrix for alveolar bone)."},
+  {t:"Growth & Development", q:"Hand-wrist radiograph: appearance of a sesamoid bone in the thumb typically indicates:", o:["Prepubertal stage","Pubertal peak has just begun","Pubertal peak is over","Adult maturity"], c:1, e:"The adductor sesamoid of the thumb appears just before or at the onset of peak height velocity, signifying that the pubertal growth spurt has begun."},
+
+  // ── BIOMECHANICS ──
+  {t:"Biomechanics", q:"The centre of resistance of an upper incisor root is located approximately:", o:["At the apex","At the cemento-enamel junction","One-third from the apex","Between one-third and one-half of root length from CEJ"], c:3, e:"The centre of resistance (Cres) of a single-rooted tooth is at approximately 24–33% of root length from the apex, or between 1/3 and 1/2 of root length from the CEJ, depending on alveolar bone levels."},
+  {t:"Biomechanics", q:"A force applied through the centre of resistance of a tooth produces:", o:["Pure rotation","Pure translation (bodily movement)","Tipping","Extrusion"], c:1, e:"A force whose line of action passes through the Cres produces pure translation — equal movement of all points on the tooth without rotation."},
+  {t:"Biomechanics", q:"A couple applied to a tooth produces:", o:["Pure translation","Pure rotation about the Cres","Tipping about the Cres","Intrusion"], c:1, e:"A couple (two equal, opposite, non-collinear forces) produces pure rotation about the centre of resistance, with no net translation."},
+  {t:"Biomechanics", q:"The moment-to-force (M:F) ratio required for controlled tipping is:", o:["0","5–7 mm","7–10 mm","≥12 mm"], c:1, e:"M:F ratio of 0 = uncontrolled tipping. 5–7 mm = controlled tipping (apex stationary). ~10 mm = bodily movement. ≥12 mm = torque/root movement."},
+  {t:"Biomechanics", q:"A headgear with a force directed above the occlusal plane exerts which moment on the maxilla?", o:["Intrusive and forward","Extrusive and backward","Counter-clockwise (growth inhibition)","No rotational effect"], c:2, e:"High-pull headgear force directed above the maxillary Cres creates a counter-clockwise moment (anterior rotation) on the maxilla, restraining vertical and anterior growth."},
+  {t:"Biomechanics", q:"Which type of wire deflection follows a cubic (third-power) relationship to deflection?", o:["Stiffness","Spring back","Range","Formability"], c:0, e:"Wire stiffness is proportional to (diameter)^4 / length^3. The load-deflection rate is proportional to the 4th power of diameter and inversely to the cube of length, making stiffness the correct cubic relationship term."},
+  {t:"Biomechanics", q:"Stainless steel wire has an elastic modulus approximately how many times greater than NiTi?", o:["2×","5×","8–10×","20×"], c:2, e:"Stainless steel has an elastic modulus ~200 GPa, while NiTi is ~40 GPa. This gives SS an 8–10× greater stiffness, meaning NiTi wires deliver much lighter, more continuous forces."},
+  {t:"Biomechanics", q:"TMA (titanium-molybdenum alloy) wire has approximately what fraction of the stiffness of stainless steel?", o:["1/4","1/2","3/4","Equal"], c:0, e:"TMA has an elastic modulus of ~70 GPa vs SS ~200 GPa — roughly 1/3 to 1/4 the stiffness — allowing moderate force delivery with greater range than SS but less than NiTi."},
+  {t:"Biomechanics", q:"The optimum orthodontic force for tooth movement is best described as:", o:["The maximum force the PDL can tolerate","A light, continuous force below capillary blood pressure (~26 g/cm²)","A heavy intermittent force","Equal to the force of mastication"], c:1, e:"Optimal force should be light enough to avoid hyalinisation yet sufficient to stimulate osteoclast activity. Continuous forces below capillary blood pressure (~20–26 g/cm²) for single-rooted teeth are ideal."},
+  {t:"Biomechanics", q:"Absolute anchorage can be achieved with:", o:["Class II elastics","Headgear","Skeletal anchorage (TADs/miniplates)","Transpalatal arch"], c:2, e:"Temporary anchorage devices (TADs) and miniplates provide true skeletal (absolute) anchorage because they are fixed to bone and do not move in response to orthodontic forces."},
+  {t:"Biomechanics", q:"Which law states that bone deposition occurs on the tension side and resorption on the pressure side?", o:["Wolff's Law","Frost's Mechanostat","Roux's Law","Einhorn's Law"], c:0, e:"Wolff's Law (1892) states that bone remodels in response to applied forces — compression side sees osteoclast activity (resorption) and tension side sees osteoblast activity (deposition)."},
+  {t:"Biomechanics", q:"The force required to produce bodily movement compared to tipping is approximately:", o:["Equal","2–3 times more","5–6 times more","10 times more"], c:1, e:"Bodily movement requires overcoming rotational tendency AND translating the whole tooth. Approximately 2–3 times greater force is needed compared to tipping, with a higher M:F ratio (~10 mm)."},
+  {t:"Biomechanics", q:"A Class III elastic worn from lower to upper arch creates what effect on the maxillary dentition?", o:["Retraction and intrusion","Protrusion and extrusion","Intrusion only","No sagittal effect"], c:1, e:"Class III elastics pull the maxillary dentition forward and extrude the upper molars (downward and backward rotation of mandible), while retracting and extruding the lower anteriors."},
+  {t:"Biomechanics", q:"Nance's Leeway space in the mixed dentition is approximately:", o:["0.5 mm per side","1.5–1.8 mm per side","2.5 mm per side","4 mm per side"], c:1, e:"The Leeway space (Nance 1947) is approximately 1.5–1.8 mm per side in the mandible and ~0.9 mm per side in the maxilla, representing the size difference between primary molars and premolars."},
+
+  // ── CLINICAL ORTHODONTICS ──
+  {t:"Clinical Orthodontics", q:"Angle's Class II Division 2 malocclusion is characterised by:", o:["Upper incisors proclined, deep overbite","Upper incisors retroclined, deep overbite, narrow arch","Anterior open bite","Crossbite"], c:1, e:"Class II Div 2: upper central incisors are retroclined (palatal tipping), lateral incisors may be proclined, deep overbite is characteristic, and there is often a square, well-developed maxillary arch."},
+  {t:"Clinical Orthodontics", q:"The PAR index measures:", o:["Cephalometric values","Dental arch dimensions","Overall malocclusion severity and treatment outcome","Periodontal bone loss"], c:2, e:"The Peer Assessment Rating (PAR) index scores various components of malocclusion (overjet, overbite, crowding, centreline, buccal occlusion) to measure treatment outcome. A >30% reduction is considered improved."},
+  {t:"Clinical Orthodontics", q:"Which periodontal probe depth would most commonly indicate healthy sulcus?", o:["0–3 mm","4–5 mm","6–7 mm","≥8 mm"], c:0, e:"A healthy sulcus probes at 0–3 mm with no bleeding on probing. ≥4 mm indicates a potential pocket requiring monitoring or treatment."},
+  {t:"Clinical Orthodontics", q:"Which space analysis method requires a lateral cephalogram in addition to study models?", o:["Arch perimeter analysis","Moyers' probability tables","Tanaka–Johnston prediction","Cephalometric-superimposition analysis (Ricketts)"], c:3, e:"Ricketts' cephalometric-based arch length analysis incorporates cephalometric data (e.g., incisor position) along with study models to predict required arch length and tooth-size discrepancy."},
+  {t:"Clinical Orthodontics", q:"The ideal torque for upper central incisors in Andrews' Six Keys is:", o:["0°","+ 7° (labial root torque)","–11° (lingual root torque)","+ 14°"], c:1, e:"Andrews described the ideal upper central incisor torque as +7° (positive = labial inclination of the crown relative to vertical), consistent with a slightly forward-inclined crown."},
+  {t:"Clinical Orthodontics", q:"Class II division 1 treatment in a growing patient is best timed:", o:["Deciduous dentition","Early mixed dentition","Pubertal peak (CS3–CS4)","After skeletal maturity"], c:2, e:"Functional appliances and orthopaedic correction are most effective during active growth — the pubertal peak (CVM stages CS3–CS4) — when condylar and suture adaptation potential is maximal."},
+  {t:"Clinical Orthodontics", q:"Andrews' Fifth Key refers to:", o:["Crown angulation","Crown inclination","No rotations","No spaces"], c:1, e:"Andrews' Six Keys: 1=Molar relationship, 2=Crown angulation (tip), 3=Crown inclination (torque), 4=No rotations, 5=No spaces, 6=Flat curve of Spee. Key 5 = no spaces."},
+  {t:"Clinical Orthodontics", q:"The Frankfort horizontal plane is defined by:", o:["Nasion and Sella","Porion and Orbitale","Anterior nasal spine and posterior nasal spine","Basion and Nasion"], c:1, e:"The Frankfort horizontal plane connects Porion (upper border of external auditory meatus) to Orbitale (lowest point of the orbital rim), used as a reference for head position and cephalometric analysis."},
+  {t:"Clinical Orthodontics", q:"Which muscle is involved in Class III tendency due to its anterior pull on the mandible?", o:["Masseter","Lateral pterygoid","Medial pterygoid","Temporalis anterior fibres"], c:1, e:"The lateral pterygoid protracts the mandible. In Class III subjects, strong inferior lateral pterygoid activity can contribute to mandibular protrusion."},
+  {t:"Clinical Orthodontics", q:"IOTN (Index of Orthodontic Treatment Need) grades treatment need from:", o:["0–5","1–5","1–4","0–10"], c:1, e:"IOTN uses grades 1–5: 1 = no treatment need, 5 = very great need. It comprises the Dental Health Component (DHC) and Aesthetic Component (AC, 1–10 scale using photographs)."},
+  {t:"Clinical Orthodontics", q:"In extraction treatment, which teeth are most commonly extracted for relief of anterior crowding?", o:["Upper and lower first premolars","Upper and lower second premolars","Upper first and lower second premolars","Canines"], c:0, e:"The most common extraction pattern is upper and lower first premolars (14, 24, 34, 44), providing space for incisor retraction and alignment while maintaining good buccal occlusion."},
+  {t:"Clinical Orthodontics", q:"Serial extraction in the mixed dentition begins with extraction of:", o:["Primary second molars","Primary first molars (D)","Primary canines (C)","First premolars"], c:2, e:"Hotz's serial extraction protocol: extract primary canines (C) first to relieve incisor crowding → extract primary first molars (D) → extract first premolars to allow canine eruption into the space."},
+  {t:"Clinical Orthodontics", q:"Root resorption risk during orthodontic treatment is highest for which teeth?", o:["Upper molars","Lower canines","Upper lateral incisors","Lower first premolars"], c:2, e:"Upper lateral incisors (and upper central incisors) have the greatest risk of root resorption during orthodontic treatment, particularly with intrusion or large anteroposterior movements."},
+  {t:"Clinical Orthodontics", q:"Which feature is NOT part of Andrews' Six Keys?", o:["Absence of rotations","Flat curve of Spee","Normal overjet","No spaces"], c:2, e:"Andrews' Six Keys are: 1=Molar relationship, 2=Crown angulation, 3=Crown inclination, 4=No rotations, 5=No spaces, 6=Flat curve of Spee. 'Normal overjet' is NOT one of the six keys."},
+  {t:"Clinical Orthodontics", q:"Which appliance is MOST indicated for a unilateral posterior crossbite with a functional shift?", o:["Quad helix","Removable expansion plate","Fixed unilateral expansion","Rapid maxillary expander (RME)"], c:0, e:"A quad helix allows asymmetric activation and is ideal for unilateral crossbite correction. A Hyrax RME expands symmetrically, suitable for bilateral crossbite; removable plates have poor patient compliance."},
+
+  // ── CEPHALOMETRICS & DIAGNOSIS ──
+  {t:"Cephalometrics", q:"The Wits appraisal measures the distance between which two points?", o:["A and B points projected onto the occlusal plane","Nasion and B point","Articulare and Pogonion","ANS and PNS"], c:0, e:"Wits appraisal (Jacobson 1975): perpendiculars from A and B points are dropped onto the functional occlusal plane, and the distance between these two points (AO–BO) is measured. Normal: females -1 to +2 mm, males 0 mm."},
+  {t:"Cephalometrics", q:"The normal ANB angle is approximately:", o:["0°","2° ± 2°","4° ± 2°","6° ± 2°"], c:1, e:"ANB angle (Riedel) represents the sagittal jaw relationship. Normal is 2° ± 2°: <0° suggests Class III, >4° suggests Class II skeletal pattern."},
+  {t:"Cephalometrics", q:"SNA normal value (Downs/Steiner) is:", o:["78° ± 3°","82° ± 3°","86° ± 3°","90° ± 3°"], c:1, e:"SNA = 82° ± 3° (Steiner). This represents the anteroposterior position of the maxilla relative to the anterior cranial base (S–N)."},
+  {t:"Cephalometrics", q:"The LAFH:TAFH ratio in a normodivergent face is approximately:", o:["45:55","55:45","60:40","50:50"], c:1, e:"Lower anterior face height (LAFH) comprises 55% of total anterior face height (TAFH). A ratio >57% suggests vertical excess (high-angle); <53% suggests short lower face height."},
+  {t:"Cephalometrics", q:"Ricketts' E-plane (aesthetic plane) connects:", o:["Nasion to Pogonion","Tip of nose to soft tissue Pogonion","Upper lip to lower lip","Subnasale to Menton"], c:1, e:"Ricketts' E-plane (1960) connects the tip of the nose to the soft tissue Pogonion (chin). Upper lip should be 4 mm behind and lower lip 2 mm behind this plane in a balanced face."},
+  {t:"Cephalometrics", q:"Holdaway soft tissue 'H-angle' is formed between:", o:["H-line and S-N plane","H-line and NB line","Upper lip and FH plane","H-line and N-B line"], c:1, e:"Holdaway's H-angle is between the H-line (soft tissue chin to upper lip) and the NB line. Normal is 7–9°. It reflects lip protrusion and soft tissue chin prominence."},
+  {t:"Cephalometrics", q:"Which cephalometric analysis uses the Xi point (geometric centre of the ramus)?", o:["Steiner","Tweed","Downs","Ricketts"], c:3, e:"Ricketts' analysis uses the Xi point, located at the geometric centre of the mandibular ramus, for measuring the mandibular arc and facial axis."},
+  {t:"Cephalometrics", q:"The Tweed analysis consists of which three angles?", o:["SNA, SNB, ANB","FMA, FMIA, IMPA","SN-MP, SN-PP, PP-MP","SNA, FMA, IMPA"], c:1, e:"The Tweed triangle uses FMA (Frankfort-Mandibular Angle), FMIA (Frankfort-Mandibular Incisor Angle), and IMPA (Incisor-Mandibular Plane Angle) — the three angles of the Tweed diagnostic triangle."},
+  {t:"Cephalometrics", q:"The ideal IMPA (incisor-mandibular plane angle) per Tweed is:", o:["80°","87°","95°","100°"], c:1, e:"Tweed's ideal IMPA is 87°. When FMA is high, IMPA must be reduced to maintain FMIA of ~65°. It reflects lower incisor uprightness over the mandibular symphysis."},
+  {t:"Cephalometrics", q:"McGregor's nasion perpendicular is used to assess:", o:["Vertical facial proportions","Anteroposterior position of the chin","Dental midlines","Nasal bone length"], c:1, e:"A vertical line dropped from Nasion perpendicular to the Frankfort horizontal is used clinically (and cephalometrically) to assess the anteroposterior position of the upper lip and soft tissue chin."},
+  {t:"Cephalometrics", q:"Gonial angle normal range is:", o:["100–110°","118–130°","110–115°","135–145°"], c:1, e:"Normal gonial angle (articulare–gonion–menton) is approximately 118–130°. High gonial angle suggests vertical growth pattern; low gonial angle suggests horizontal growth."},
+  {t:"Cephalometrics", q:"Which point is defined as the most anterior point on the mandibular symphysis?", o:["Pogonion","Gnathion","Menton","B point"], c:0, e:"Pogonion (Pg) = the most anterior point on the bony chin. Gnathion = between Pogonion and Menton. Menton = most inferior point of mandibular symphysis. B point = most concave point of anterior mandible."},
+
+  // ── APPLIANCES & MATERIALS ──
+  {t:"Appliances", q:"Which functional appliance works on the principle of forward mandibular posturing and is tooth-borne?", o:["Frankel regulator","Twin Block appliance","Bionator","Harvold activator"], c:1, e:"The Twin Block (Clark 1982) is tooth-borne, uses upper and lower inclined bite blocks to posture the mandible forward, and has the highest compliance as it can be worn 24 hours including during eating."},
+  {t:"Appliances", q:"The Frankel (FR) appliance primarily acts as a:", o:["Tooth-borne functional appliance","Tissue-borne appliance using vestibular shields","Skeletal anchorage device","Removable retainer"], c:1, e:"The Frankel regulator is tissue-borne. Vestibular shields eliminate cheek and lip pressure, allowing the dental arch to expand. Lip pads eliminate lower lip trap and hyperfunction."},
+  {t:"Appliances", q:"Rapid Maxillary Expansion (RME) primarily opens the mid-palatal suture. This is best achieved in patients:", o:["Under 14 years before suture fusion","Over 20 years","After third molar eruption","After orthodontic debond"], c:0, e:"RME is most effective before mid-palatal suture fusion (typically before age 14–16 years). Beyond this age, resistance increases and SARPE (surgically assisted RME) may be required."},
+  {t:"Appliances", q:"The transpalatal arch (TPA) is used primarily for:", o:["Maxillary expansion","Anchorage reinforcement and molar torque control","Incisor intrusion","Canine retraction"], c:1, e:"The TPA connects upper first molars via a 0.9 mm SS wire across the palate. It prevents molar rotation and tipping (especially during extraction mechanics) and adds anchorage without extra-oral appliances."},
+  {t:"Appliances", q:"Nickel-Titanium (NiTi) wires are preferred in the initial alignment stages because:", o:["They have high stiffness","They deliver light, constant forces over a large range of activation","They are the cheapest option","They bond better to brackets"], c:1, e:"NiTi wires exhibit superelasticity (or thermoelasticity): they maintain near-constant low force across a wide activation range, ideal for aligning irregularly positioned teeth without causing excessive force."},
+  {t:"Appliances", q:"Which bracket prescription is associated with straight-wire appliance (SWA) using the 'standard Roth' modifications?", o:["Andrews' original","Roth (1976)","MBT (McLaughlin-Bennett-Trevisi)","Damon bracket"], c:1, e:"Roth (1976) modified Andrews' original bracket prescription to incorporate overcorrections (more tip and torque) to account for finish and relapse tendencies, forming the basis of the classic Roth SWA prescription."},
+  {t:"Appliances", q:"Glass ionomer cement (GIC) in orthodontics is valued primarily for:", o:["High bond strength","Fluoride release and chemical adhesion to enamel/dentine","Aesthetic translucency","High fracture toughness"], c:1, e:"GIC bonds chemically to tooth structure and releases fluoride — reducing white spot lesion risk. Bond strength is lower than composite resin but adequate for band cementation and in high-caries-risk patients."},
+  {t:"Appliances", q:"Which retainer is considered the gold standard for long-term mandibular incisor retention?", o:["Hawley retainer","Vacuum-formed (Essix) retainer","Fixed bonded retainer (3-3)","Spring retainer"], c:2, e:"A fixed palatal/lingual retainer bonded to all six lower anterior teeth (canine-to-canine, 0.0175 multistranded wire) provides the most reliable long-term lower incisor retention, especially where spacing or rotation was corrected."},
+  {t:"Appliances", q:"SARPE (Surgically Assisted Rapid Palatal Expansion) is indicated when:", o:["Patient is under 14 years","Mid-palatal suture is fused (typically adults)","Patient requires molar distalization","Unilateral crossbite is present"], c:1, e:"In skeletally mature adults with a fused mid-palatal suture, conventional RME is ineffective and risks root damage, tipping, or buccal bone dehiscence. SARPE releases the palate surgically before expansion."},
+  {t:"Appliances", q:"Hawley retainer is indicated primarily for:", o:["Fixed retention","Post-expansion retention (after RME)","Severe crowding relapse prevention","Deep overbite retention"], c:1, e:"The Hawley retainer is particularly useful after maxillary expansion (RME) to maintain the expanded arch. It also allows settling of the posterior occlusion and is easily adjusted for minor tooth movement."},
+  {t:"Appliances", q:"Which wire property is most important for space closure in fixed appliance treatment?", o:["High spring-back","Low stiffness","High stiffness and strength","Biocompatibility only"], c:2, e:"Space closure requires a stiff, strong wire (typically 0.019×0.025 SS or 0.018×0.025 SS in a 0.022 bracket slot) to resist deformation under elastomeric or coil spring forces while maintaining torque control."},
+  {t:"Appliances", q:"The Z-spring in a removable appliance works by:", o:["Tipping a tooth labially","Distalizing molars","Expanding the arch transversely","Intruding incisors"], c:0, e:"A Z-spring (double cantilever spring) is activated to tip a palatally displaced incisor labially. It is incorporated in the baseplate of a removable appliance."},
+  {t:"Appliances", q:"Self-ligating brackets reduce friction primarily by:", o:["Using elastic modules","Using a passive or active slide/clip instead of ligatures","Being made from ceramic","Having smaller bracket slots"], c:1, e:"Self-ligating brackets (Damon, Speed, In-Ovation) use a metallic clip or slide that avoids the added friction of elastic or steel ligatures, theoretically allowing lower forces and reduced chair time."}
+];
+
+// ═══════════════════════════════════════════════
+// CLINICAL CASES DATA
+// ═══════════════════════════════════════════════
+const CASES = [
+  {title:"Skeletal Class II — Mandibular Deficiency", tag:"Growth Case · Functional Appliance", chief:"Prominent upper teeth, receding chin, lip incompetence", findings:["Convex profile, incompetent lips","Overjet 9 mm, overbite 4 mm","Class II molar and canine relationship","SNB 74°, ANB 6°, CVM Stage CS3"], management:["Twin Block or Herbst appliance to posture mandible forward","Use during active growth (CS3–CS4)","Fixed appliances post-functional for detailing","Retention with upper removable retainer and fixed lower 3-3","Long-term monitoring for relapse"], pearls:["Best treated at pubertal peak","Avoid skeletal treatment post-growth — consider orthognathic surgery in adults","Twin Block worn 24h including eating"]},
+  {title:"Skeletal Class III — Mandibular Prognathism", tag:"Surgical Case · High Complexity", chief:"Underbite, crossbite, difficulty chewing", findings:["Concave profile, anterior crossbite","Reverse overjet 4 mm, Class III molar relationship","SNB 84°, ANB −2°, mandibular prognathism","Functional shift excluded"], management:["Growth modification with facemask (reverse pull headgear) before age 10","Upper arch expansion + protraction facemask","Decompensate dentition with fixed appliances pre-surgically if adult","Orthognathic surgery (BSSO setback ± Le Fort I) at skeletal maturity","Post-surgical fixed appliance detailing and retention"], pearls:["Facemask most effective <8 years","Chin cup ineffective in true prognathism","Document facial growth annually in adolescent patients"]},
+  {title:"Anterior Open Bite — Vertical Pattern", tag:"Vertical Case · Multidisciplinary", chief:"Cannot bite with front teeth, gap when biting", findings:["High-angle skeletal pattern (FMA >30°)","Anterior open bite 4 mm","Posterior tongue thrust confirmed","Class I molar relationship","Digit sucking habit history"], management:["Habit elimination first (tongue crib, habit breaker)","Myofunctional therapy for tongue thrust","Posterior tooth intrusion with TADs (miniscrews)","Avoid extrusion mechanics","Orthognathic surgery (posterior impaction, Le Fort I) if skeletal"], pearls:["Tongue thrust rarely causes AOB — usually adaptive","Intrusion of posterior teeth most powerful technique","High relapse rate without habit correction"]},
+  {title:"Deep Overbite — Class II Division 2", tag:"Deep Bite · Complex Mechanics", chief:"Upper front teeth cover lower teeth completely", findings:["Upper centrals retroclined (palatal tipping)","Overbite 7 mm, overjet 2 mm","Class II molar, narrow upper arch","Square arch form, well-developed musculature"], management:["Intrude upper and lower incisors with utility arch or TADs","Procline upper centrals with torque","Reverse curve of Spee in lower arch","Consider bite plane to disengage posterior occlusion","Long-term retention — high relapse potential"], pearls:["Class II Div 2 has strong muscular influence — relapse is high","Avoid simple overbite reduction by molar extrusion in adults","Consider permanent fixed retention"]},
+  {title:"Bimaxillary Protrusion", tag:"Extraction Case · Esthetics", chief:"Protruding upper and lower teeth, inability to close lips", findings:["Proclined upper and lower incisors","Upper incisor to SN >110°, lower incisor to MP >97°","Bi-protrusive profile, lip strain on closure","Class I molar relationship, mild crowding"], management:["Extract all four first premolars","Retract upper and lower incisors maintaining torque","Use maximum anchorage (TPA, TADs if needed)","Close spaces with sliding mechanics or loops","Careful lip assessment at end of treatment"], pearls:["Intrude while retracting to avoid 'gummy smile'","Overcorrect slightly — soft tissue follows bone with lag","Risk of root resorption with large movements"]},
+  {title:"Unilateral Posterior Crossbite with Functional Shift", tag:"Transverse · Mixed Dentition", chief:"Jaw shifts to one side on biting", findings:["End-to-end in centric relation","Shift to right on intercuspation","Asymmetric overjet","Early mixed dentition"], management:["Early intervention in mixed dentition","Quad helix for asymmetric expansion","Removable expansion plate if compliance assured","Resolve before permanent tooth eruption","Monitor for skeletal asymmetry"], pearls:["True unilateral crossbite in CR = treat early","Functional shift can cause condylar asymmetry if untreated","Quad helix preferred over removable for compliance"]},
+  {title:"Impacted Upper Canine — Palatal Displacement", tag:"Impaction · Surgical-Orthodontic", chief:"Missing upper canine tooth at age 14", findings:["Maxillary right canine palatally displaced","Primary canine retained","Good root resorption of adjacent lateral excluded on CBCT","Sector angle >45° — complex"], management:["Extract primary canine 6–12 months before surgical exposure","Create space orthodontically","Surgical exposure and bond attachment","Traction with auxiliaries — light extrusive force","Monitor for ankylosis and resorption"], pearls:["Palatally displaced canines more common in girls (3:1)","Sector angle >45° indicates poor prognosis","CBCT essential for 3D localisation"]},
+  {title:"Skeletal Open Bite — Adult Surgical Patient", tag:"Surgical · Le Fort I", chief:"Cannot bite with front teeth, speech difficulty", findings:["Anterior open bite 6 mm with posterior contact only","FMA 38°, high-angle skeletal","Gummy smile 5 mm on smiling","Tongue thrust adaptive"], management:["Orthodontic decompensation — level and align arches","Worsen open bite during decompensation","Le Fort I maxillary impaction +/- mandibular advancement (BSSO)","Post-surgical orthodontic detailing","Long-term fixed retention"], pearls:["Surgical correction more stable than orthodontic alone","Avoid extraction treatment in true skeletal cases","Soft tissue changes: lip lengthening with maxillary impaction"]},
+  {title:"Class I Crowding — Borderline Extraction Decision", tag:"Crowding · Extraction vs Non-Extraction", chief:"Crooked upper and lower teeth", findings:["Upper arch crowding 7 mm, lower 5 mm","Class I molar and canine","Good profile, competent lips","Incisors at normal inclination"], management:["Growth assessment: remaining growth changes extraction decision","Non-extraction: arch expansion, proclination (with risk)","Extraction: upper and lower 4s — retraction","Mock cephalometric analysis to predict post-treatment profile","Functional assessment of lip pressure"], pearls:["IPR can resolve up to 4 mm crowding in adults","Lips should not worsen with extraction if profile is straight","Use diagnostic setup if undecided"]},
+  {title:"Digit Sucking Habit — Open Bite", tag:"Habit · Early Intervention", chief:"Thumb sucking, gap in front teeth", findings:["Digit sucking habit since age 2","Anterior open bite 3 mm, proclined upper incisors","Overjet 6 mm","Primary dentition, age 5"], management:["Habit counselling and reward chart for child","Bitter nail polish or thumb guard","Removable or fixed habit breaker (palatal crib) if persistent","Monitor — most self-resolve before age 7","Re-evaluate at age 8–9 with panoramic X-ray"], pearls:["Before age 7 — most likely to self-correct","After age 7 — intervention indicated","Habit appliances work by eliminating suction not the digit itself"]},
+  {title:"Missing Upper Lateral Incisors", tag:"Hypodontia · Space Management", chief:"Gaps in upper front teeth since childhood", findings:["Bilateral absence of UL2 (12 and 22)","Canines in lateral incisor position","Class I molar","Good profile"], management:["Option A: Open spaces for implants — align canines away from midline, reshape canines as laterals","Option B: Close spaces — use canine substitution, reshape canines cosmetically","Decision based on: canine size/shape, occlusion, profile, patient preference","Restorative work essential in either option","Multidisciplinary: orthodontist + restorative + prosthodontist"], pearls:["Implants placed only after facial growth complete (~18–20F, ~20–22M)","Canine substitution avoids long-term implant maintenance","Document position with composite mock-ups for patient consent"]},
+  {title:"Hyperdontia — Supernumerary Tooth (Mesiodens)", tag:"Supernumerary · Interceptive", chief:"Upper front teeth not erupting at age 8", findings:["Mesiodens (midline supernumerary) blocking upper centrals","Conical type on OPG + periapical","Unerupted upper left central incisor","No root resorption of permanent teeth"], management:["Extract mesiodens under GA if blocking eruption","Allow spontaneous eruption of central (up to 12 months)","Bond attachment and apply traction if no movement","Ensure adequate space with removable/fixed appliance"], pearls:["Inverted mesiodens more likely to require traction","Monitor root formation — extract supernumerary before root completion","75% of impacted centrals will erupt within 12 months after removal"]},
+  {title:"Cleft Lip and Palate — Orthodontic Management", tag:"Cleft · Multidisciplinary", chief:"Patient with repaired unilateral cleft lip and palate", findings:["Unilateral complete CLP (right side)","Anterior crossbite, collapsed upper arch","Missing lateral incisor in cleft region","Skeletal Class III tendency due to midface deficiency"], management:["Pre-surgical orthopaedics (NAM/Latham) in infancy","Primary lip repair ~3 months, palate repair ~12 months","Alveolar bone graft (ABG) in mixed dentition before canine eruption (9–11 years)","Fixed appliances for alignment + space management","Orthognathic surgery if skeletal Class III persists at maturity"], pearls:["ABG timing critical — graft before canine root is 1/2–2/3 formed","Canine often the tooth of choice in cleft region","Multidisciplinary team: orthodontist, surgeon, SALT, psychologist, restorative"]},
+  {title:"Gummy Smile — Vertical Maxillary Excess", tag:"VME · Surgical Planning", chief:"Too much gum showing when smiling", findings:["Gingival display >3 mm on smiling","Upper lip short or normal (assess at rest)","Anterior open bite or normal overbite","Class I skeletal, good profile sagittally"], management:["Assess aetiology: VME vs altered passive eruption vs short lip vs dentoalveolar","Orthodontic intrusion of upper anteriors (TADs) for mild cases","Crown lengthening if altered passive eruption","Le Fort I maxillary impaction for skeletal VME (>4–5 mm gum show)","Lip repositioning procedure for short lip"], pearls:["Ideal upper incisor display at rest: 2–3 mm in young adults","Men show less upper incisor — gummy smile more noticeable in women","TADs allow 2–3 mm intrusion without surgery"]},
+  {title:"Mandibular Asymmetry — Hemimandibular Hyperplasia", tag:"Asymmetry · Growth Pathology", chief:"Jaw growing unevenly, chin shifted to one side", findings:["Progressive mandibular asymmetry after puberty","Lower midline deviated, cant of occlusal plane","Bone scan (SPECT) shows unilateral increased uptake in condyle","Cross-bite on the unaffected side"], management:["Wait for growth cessation confirmed by bone scan","High condylectomy to remove active growth centre","Post-surgical fixed appliances for decompensation","Orthognathic surgery for residual asymmetry","Genioplasty if chin midline correction required"], pearls:["Condylar hyperplasia must be excluded before any surgical correction","Bone scan (SPECT-CT) essential for activity assessment","Do not treat definitively until growth has completely stopped"]},
+  {title:"Obstructive Sleep Apnoea — Orthodontic Perspective", tag:"OSA · MAD Therapy", chief:"Snoring, daytime sleepiness, orthodontic referral", findings:["Polysomnography: AHI 18 (moderate OSA)","Retrognathic mandible, Class II","Narrow maxillary arch, tongue scalloping","BMI 27"], management:["Mandibular advancement device (MAD) as first-line for mild-moderate OSA or CPAP intolerant","Upper and lower splints advancing mandible 50–75% of maximum protrusion","Review: sleep study at 3 months, titrate","MMA (maxillomandibular advancement) surgery for severe cases — 90% success","RPE can improve nasal airway in select patients"], pearls:["Orthodontists well-placed to provide MAD therapy","Side effects: tooth movement, temporomandibular discomfort, occlusal changes","Screen all patients for OSA symptoms — use STOP-BANG questionnaire"]}
+];
+
+// ═══════════════════════════════════════════════
+// CEPHALOMETRIC DATA
+// ═══════════════════════════════════════════════
+const CEPH_DATA = {
+  "Steiner": [
+    {measurement:"SNA",normal:"82° ± 3°",interpretation:"Maxillary AP position relative to cranial base"},
+    {measurement:"SNB",normal:"80° ± 3°",interpretation:"Mandibular AP position relative to cranial base"},
+    {measurement:"ANB",normal:"2° ± 2°",interpretation:"Sagittal jaw relationship (>4°=Cl.II, <0°=Cl.III)"},
+    {measurement:"SN–GoGn",normal:"32° ± 5°",interpretation:"Mandibular plane angle — vertical growth pattern"},
+    {measurement:"SN–ANS/PNS",normal:"14° ± 3°",interpretation:"Palatal plane to SN — maxillary cant"},
+    {measurement:"Upper incisor to NA (angle)",normal:"22° ± 5°",interpretation:"Upper incisor inclination to NA line"},
+    {measurement:"Upper incisor to NA (mm)",normal:"4 mm ± 2",interpretation:"Upper incisor protrusion beyond NA"},
+    {measurement:"Lower incisor to NB (angle)",normal:"25° ± 5°",interpretation:"Lower incisor inclination"},
+    {measurement:"Lower incisor to NB (mm)",normal:"4 mm ± 2",interpretation:"Lower incisor protrusion beyond NB"},
+    {measurement:"Pogonion to NB",normal:"Equal to lower incisor to NB",interpretation:"Chin prominence — Holdaway ratio"}
+  ],
+  "Tweed": [
+    {measurement:"FMA",normal:"25° ± 5°",interpretation:"Frankfort–mandibular plane angle; vertical pattern"},
+    {measurement:"FMIA",normal:"68° ± 5°",interpretation:"Frankfort–lower incisor angle; incisor uprightness"},
+    {measurement:"IMPA",normal:"87° ± 5°",interpretation:"Lower incisor to mandibular plane"}
+  ],
+  "Ricketts": [
+    {measurement:"Facial Axis",normal:"90° ± 3.5°",interpretation:"Chin growth direction relative to Ba-Na"},
+    {measurement:"Facial Depth",normal:"87° ± 3°",interpretation:"Facial convexity — AP jaw relationship"},
+    {measurement:"Mandibular Plane",normal:"26° ± 4°",interpretation:"Frankfort–mandibular plane"},
+    {measurement:"Lower Face Height",normal:"47° ± 4°",interpretation:"ANS-Xi-PM angle — vertical proportion"},
+    {measurement:"Upper Molar Position",normal:"(Age+3) mm ± 3",interpretation:"Upper molar to PTV — AP position"},
+    {measurement:"Upper Incisor Protrusion",normal:"3.5 mm ± 2.3",interpretation:"Distance from upper incisor to APo line"},
+    {measurement:"Upper Incisor Inclination",normal:"28° ± 4°",interpretation:"Upper incisor to APo line angle"},
+    {measurement:"Lower Incisor to APo",normal:"1 mm ± 2",interpretation:"Lower incisor protrusion"},
+    {measurement:"Lip to E-plane",normal:"Upper −4 mm / Lower −2 mm",interpretation:"Lip position to nose-chin plane"}
+  ],
+  "Wits / Jarabak": [
+    {measurement:"Wits appraisal",normal:"Female: −1 to +2 mm / Male: 0 mm",interpretation:"Sagittal jaw relationship on occlusal plane"},
+    {measurement:"Posterior:Anterior face height ratio (S-Ar:Ar-Go:N-Me)",normal:"62–65%",interpretation:">65% = horizontal growth; <62% = vertical growth"},
+    {measurement:"Gonial angle (Ar-Go-Me)",normal:"118–130°",interpretation:"High = vertical pattern; Low = horizontal pattern"},
+    {measurement:"Lower gonial angle (Go-Me to Ar-Go)",normal:"70–75°",interpretation:"Inferior gonial angle contribution"},
+    {measurement:"Y-axis (SGn to FH)",normal:"59° ± 3°",interpretation:"Facial growth direction — Downs analysis"}
+  ],
+  "Soft Tissue": [
+    {measurement:"Nasolabial angle",normal:"102–110°",interpretation:"Relation of columella to upper lip; <90° = proclined UL"},
+    {measurement:"Holdaway H-angle",normal:"7–9°",interpretation:"Lip protrusion; >15° = bimaxillary protrusion"},
+    {measurement:"Mentolabial fold",normal:"Moderate — 4 mm deep",interpretation:"Shallow = protruded chin or lip strain; Deep = retruded chin"},
+    {measurement:"Upper lip to Sn-Pg′ line",normal:"3–4 mm anterior",interpretation:"Lip prominence relative to facial plane"},
+    {measurement:"Lower lip to Sn-Pg′",normal:"1–2 mm anterior",interpretation:"Lower lip slightly behind upper lip"},
+    {measurement:"Interlabial gap",normal:"0–2 mm at rest",interpretation:">4 mm = lip incompetence; requires habit/lip seal assessment"}
+  ]
+};
+
+// ═══════════════════════════════════════════════
+// REFERENCE LIBRARY
+// ═══════════════════════════════════════════════
+const REFS = [
+  {category:"Core Textbooks", icon:"📘", bg:"rgba(0,100,200,0.15)", items:[
+    {title:"Proffit WR — Contemporary Orthodontics (6th ed.)", sub:"The definitive orthodontic textbook — growth, biomechanics, treatment", url:"https://www.elsevier.com/books/contemporary-orthodontics/proffit/978-0-323-54387-3"},
+    {title:"Mitchell L — An Introduction to Orthodontics (5th ed.)", sub:"Essential undergraduate/postgraduate primer — widely used in RCS prep", url:"https://academic.oup.com/book/8285"},
+    {title:"Graber TM — Orthodontics: Current Principles and Techniques", sub:"Comprehensive reference — appliance mechanics and treatment planning", url:"https://www.elsevier.com/books/orthodontics-current-principles-and-techniques/graber/978-0-323-37683-5"},
+    {title:"Bhalajhi SI — Orthodontics: The Art and Science (5th ed.)", sub:"Popular South Asian exam reference — broad coverage", url:"https://www.arya.co.in/orthodontics-the-art-and-science"},
+    {title:"Nanda R — Biomechanics and Esthetic Strategies in Clinical Orthodontics", sub:"Advanced force systems, anchorage, and finishing", url:"https://www.elsevier.com/books/biomechanics-and-esthetic-strategies-in-clinical-orthodontics/nanda/978-0-7216-9819-1"},
+    {title:"Isaacson KG et al — Removable Orthodontic Appliances", sub:"BOS-endorsed guide to removable appliance design", url:"https://www.wiley.com/en-us/Removable+Orthodontic+Appliances-p-9780723431749"}
+  ]},
+  {category:"RCS Exam Official Resources", icon:"🏛️", bg:"rgba(240,165,0,0.10)", items:[
+    {title:"RCSEd MOrth Examination Overview", sub:"Official exam syllabus, regulations, and format from the Royal College", url:"https://www.rcsed.ac.uk/education-and-examinations/examinations/orthodontics-examinations/membership-in-orthodontics-morth"},
+    {title:"MOrth Part 1 Blueprint", sub:"Detailed content guide for written examination component", url:"https://www.rcsed.ac.uk/education-and-examinations/examinations/orthodontics-examinations/membership-in-orthodontics-morth/morth-part-1"},
+    {title:"MOrth Part 2 Clinical Examination", sub:"OSCE and clinical case assessment guidance", url:"https://www.rcsed.ac.uk/education-and-examinations/examinations/orthodontics-examinations/membership-in-orthodontics-morth/morth-part-2"},
+    {title:"RCSEd Exam Dates and Fees", sub:"Current sitting dates, registration deadlines, and fee schedule", url:"https://www.rcsed.ac.uk/education-and-examinations/examinations/orthodontics-examinations/membership-in-orthodontics-morth/morth-dates-and-fees"},
+    {title:"British Orthodontic Society — Clinical Guidelines", sub:"Evidence-based BOS guidelines used in MOrth clinical viva", url:"https://www.bos.org.uk/Professionals-Members/Clinical-Guidance"},
+    {title:"Faculty of Dental Surgery Guidance — RCSEng", sub:"Cross-college standards for specialist orthodontic training", url:"https://www.rcseng.ac.uk/dental-faculties/fds/about-fds/"}
+  ]},
+  {category:"Key Journals", icon:"📄", bg:"rgba(0,201,167,0.08)", items:[
+    {title:"American Journal of Orthodontics and Dentofacial Orthopedics (AJO-DO)", sub:"Leading peer-reviewed orthodontic journal — high-impact", url:"https://www.ajodo.org"},
+    {title:"European Journal of Orthodontics", sub:"EOS official journal — strong on clinical and biomechanical research", url:"https://academic.oup.com/ejo"},
+    {title:"Angle Orthodontist", sub:"Long-standing journal — technology, appliances, and outcomes research", url:"https://www.angle.org"},
+    {title:"Journal of Orthodontics (BOS)", sub:"UK-focused journal — clinical cases and evidence-based reviews", url:"https://journals.sagepub.com/home/joo"},
+    {title:"Orthodontics & Craniofacial Research (ORCA)", sub:"Growth, functional appliances, surgical orthodontics focus", url:"https://onlinelibrary.wiley.com/journal/16016343"}
+  ]},
+  {category:"Growth & Development References", icon:"📈", bg:"rgba(100,0,200,0.08)", items:[
+    {title:"Baccetti T et al — Cervical Vertebral Maturation (CVM) method (2002)", sub:"Original CVM paper — gold standard for skeletal maturity assessment", url:"https://pubmed.ncbi.nlm.nih.gov/11976408/"},
+    {title:"Björk A — Prediction of mandibular growth rotation — implant study", sub:"Classic Stockholm implant study defining growth rotation types", url:"https://pubmed.ncbi.nlm.nih.gov/1015039/"},
+    {title:"Scammon RE — Growth curves (1930)", sub:"Original four tissue-type growth curves — essential for MOrth", url:"https://pubmed.ncbi.nlm.nih.gov/"},
+    {title:"Enlow DH — Facial Growth (3rd ed.)", sub:"Counterpart principle, bone remodelling, and nasomaxillary growth", url:"https://www.elsevier.com/books/facial-growth/enlow/978-0-7216-2341-4"}
+  ]},
+  {category:"Online Tools & Resources", icon:"🌐", bg:"rgba(0,0,0,0.15)", items:[
+    {title:"Cephalometric Digitizer — WebCeph", sub:"Free online cephalometric tracing tool for practice", url:"https://webceph.com"},
+    {title:"Pubmed / NCBI — Literature Search", sub:"Access orthodontic research papers and systematic reviews", url:"https://pubmed.ncbi.nlm.nih.gov/?term=orthodontics"},
+    {title:"Cochrane Oral Health — Systematic Reviews", sub:"Highest quality evidence for orthodontic interventions", url:"https://oralhealth.cochrane.org"},
+    {title:"GRADE Evidence — Orthodontic Guidelines", sub:"Evidence grading for clinical decision making", url:"https://www.gradeworkinggroup.org"}
+  ]}
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let quizQueue = [], qIndex = 0, answered = 0, correct = 0, wrong = 0;
+let currentQText = "";
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+function init() {
+  // Topic counts
+  const counts = {};
+  QUESTIONS.forEach(q => { counts[q.t] = (counts[q.t]||0)+1; });
+  document.getElementById('tc-all').textContent = QUESTIONS.length + ' questions';
+  document.getElementById('tc-growth').textContent = (counts['Growth & Development']||0) + ' questions';
+  document.getElementById('tc-bio').textContent = (counts['Biomechanics']||0) + ' questions';
+  document.getElementById('tc-clin').textContent = (counts['Clinical Orthodontics']||0) + ' questions';
+  document.getElementById('tc-ceph').textContent = (counts['Cephalometrics']||0) + ' questions';
+  document.getElementById('tc-app').textContent = (counts['Appliances']||0) + ' questions';
+  document.getElementById('qs-total-q').textContent = QUESTIONS.length;
+  buildCases();
+  buildCeph();
+  buildRefs();
+}
+
+// ═══════════════════════════════════════════════
+// SECTION SWITCHER
+// ═══════════════════════════════════════════════
+function switchSection(id) {
+  document.querySelectorAll('.section-page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+// QUIZ ENGINE
+// ═══════════════════════════════════════════════
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function startQuiz(topic) {
+  const pool = topic === 'all' ? QUESTIONS : QUESTIONS.filter(q => q.t === topic);
+  quizQueue = shuffle(pool);
+  qIndex = 0;
+  document.getElementById('topicSelector').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'none';
+  document.getElementById('quizBox').style.display = 'block';
+  document.getElementById('quizTopicBadge').textContent = topic === 'all' ? 'Mixed Topics' : topic;
+  loadQ();
+}
+
+function loadQ() {
+  if (qIndex >= quizQueue.length) { showResults(); return; }
+  const q = quizQueue[qIndex];
+  currentQText = q.q;
+  document.getElementById('questionText').textContent = q.q;
+  document.getElementById('qCounter').textContent = `Q ${qIndex+1} / ${quizQueue.length}`;
+  document.getElementById('quizProgress').style.width = ((qIndex / quizQueue.length) * 100) + '%';
+  document.getElementById('explanationBox').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(i, q.correct, q.e, btn);
+    grid.appendChild(btn);
+  });
+}
+
+function selectAnswer(chosen, correct_idx, explanation, chosenBtn) {
+  // Disable all options
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === correct_idx) btn.classList.add('correct');
+    if (i === chosen && chosen !== correct_idx) btn.classList.add('wrong');
+  });
+  // Show explanation
+  document.getElementById('expText').textContent = explanation;
+  document.getElementById('explanationBox').style.display = 'block';
+  document.getElementById('nextBtn').style.display = 'inline-block';
+  // Track score
+  answered++;
+  if (chosen === correct_idx) correct++; else wrong++;
+  updateScoreBanner();
+  updateSidebarProgress();
+}
+
+function nextQuestion() {
+  qIndex++;
+  loadQ();
+}
+
+function showResults() {
+  document.getElementById('quizBox').style.display = 'none';
+  const screen = document.getElementById('resultsScreen');
+  screen.style.display = 'block';
+  const pct = answered > 0 ? Math.round((correct/answered)*100) : 0;
+  document.getElementById('resBigScore').textContent = pct + '%';
+  document.getElementById('resLabel').textContent = pct >= 70 ? '🎉 Well done! Keep it up.' : 'Keep practising — you\'ve got this!';
+  document.getElementById('resCorrect').textContent = correct;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resTotal').textContent = answered;
+}
+
+function exitQuiz() {
+  document.getElementById('quizBox').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'none';
+  document.getElementById('topicSelector').style.display = 'block';
+}
+
+function updateScoreBanner() {
+  document.getElementById('sc-total').textContent = answered;
+  document.getElementById('sc-correct').textContent = correct;
+  document.getElementById('sc-wrong').textContent = wrong;
+  const pct = answered > 0 ? Math.round((correct/answered)*100) : 0;
+  document.getElementById('sc-pct').textContent = answered > 0 ? pct + '%' : '—';
+}
+
+function updateSidebarProgress() {
+  const pct = answered > 0 ? Math.round((correct/answered)*100) : 0;
+  const donePct = Math.round((answered/QUESTIONS.length)*100);
+  document.getElementById('mastPct').textContent = pct + '%';
+  document.getElementById('mastBar').style.width = pct + '%';
+  document.getElementById('qDone').textContent = answered;
+  document.getElementById('qDoneBar').style.width = Math.min(donePct,100) + '%';
+}
+
+// ═══════════════════════════════════════════════
+// CLINICAL CASES
+// ═══════════════════════════════════════════════
+function buildCases() {
+  const grid = document.getElementById('caseGrid');
+  CASES.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'case-card';
+    div.innerHTML = `<div class="case-num">${i+1}</div><div class="case-info"><div class="ct">${c.title}</div><div class="cs">${c.tag}</div></div><div class="case-arrow"><i class="fas fa-chevron-right"></i></div>`;
+    div.onclick = () => openCase(i);
+    grid.appendChild(div);
+  });
+}
+
+function openCase(i) {
+  const c = CASES[i];
+  document.getElementById('caseModalHeader').innerHTML = `<h2 style="font-size:19px;">${c.title}</h2>`;
+  document.getElementById('caseModalBody').innerHTML = `
+    <span class="case-tag">${c.tag}</span>
+    <div class="case-section"><h4>Chief Complaint</h4><ul><li>${c.chief}</li></ul></div>
+    <div class="case-section"><h4>Clinical Findings</h4><ul>${c.findings.map(f=>`<li>${f}</li>`).join('')}</ul></div>
+    <div class="case-section"><h4>Management</h4><ul>${c.management.map(m=>`<li>${m}</li>`).join('')}</ul></div>
+    <div class="case-section"><h4>Clinical Pearls</h4><ul>${c.pearls.map(p=>`<li>${p}</li>`).join('')}</ul></div>
+  `;
+  openModal('caseModal');
+}
+
+// ═══════════════════════════════════════════════
+// CEPHALOMETRICS
+// ═══════════════════════════════════════════════
+function buildCeph() {
+  const tabs = document.getElementById('cephTabs');
+  Object.keys(CEPH_DATA).forEach((name, i) => {
+    const t = document.createElement('div');
+    t.className = 'ceph-tab' + (i===0?' active':'');
+    t.textContent = name;
+    t.onclick = () => {
+      document.querySelectorAll('.ceph-tab').forEach(el=>el.classList.remove('active'));
+      t.classList.add('active');
+      renderCeph(name);
+    };
+    tabs.appendChild(t);
+  });
+  renderCeph(Object.keys(CEPH_DATA)[0]);
+}
+
+function renderCeph(name) {
+  const rows = CEPH_DATA[name];
+  document.getElementById('cephContent').innerHTML = `
+    <table class="ceph-table">
+      <thead><tr><th>Measurement</th><th>Normal Value</th><th>Clinical Significance</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr><td><strong>${r.measurement}</strong></td><td class="ceph-val">${r.normal}</td><td class="ceph-normal">${r.interpretation}</td></tr>`).join('')}</tbody>
+    </table>
+  `;
+}
+
+// ═══════════════════════════════════════════════
+// REFERENCES
+// ═══════════════════════════════════════════════
+function buildRefs() {
+  const cont = document.getElementById('refsContent');
+  REFS.forEach(cat => {
+    cont.innerHTML += `
+      <div class="ref-category">
+        <h4>${cat.icon} ${cat.category}</h4>
+        <div class="ref-list">${cat.items.map(item=>`
+          <a href="${item.url}" target="_blank" class="ref-item">
+            <div class="ri-icon" style="background:${cat.bg}">${cat.icon}</div>
+            <div class="ri-info"><div class="rt">${item.title}</div><div class="rs">${item.sub}</div></div>
+            <div class="ri-arrow"><i class="fas fa-external-link-alt"></i></div>
+          </a>`).join('')}
+        </div>
+      </div>
+    `;
+  });
+}
+
+// ═══════════════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', function(e) { if(e.target===this) closeModal(this.id); });
+});
+
+// ═══════════════════════════════════════════════
+// REGISTER
+// ═══════════════════════════════════════════════
+function submitRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const inst = document.getElementById('reg-inst').value.trim();
+  if (!name || !email || !inst) { alert('Please fill in all required fields.'); return; }
+  // mailto fallback — sends registration details as email
+  const subject = encodeURIComponent('MOrth Buddy Registration Request — ' + name);
+  const body = encodeURIComponent(
+    `New Registration Request for MOrth Buddy\n\n` +
+    `Name: ${name}\nEmail: ${email}\nInstitution: ${document.getElementById('reg-inst').value}\n` +
+    `Country: ${document.getElementById('reg-country').value}\nStage: ${document.getElementById('reg-stage').value}\n\n` +
+    `Please approve access and reply to the applicant.`
+  );
+  window.open(`mailto:kubavatajay@gmail.com?subject=${subject}&body=${body}`);
+  document.getElementById('regForm').style.display = 'none';
+  document.getElementById('regSuccess').style.display = 'block';
+}
+
+function submitLogin() {
+  alert('Login coming soon! Please register for free access or contact Dr. Ajay Kubavat via LinkedIn.');
+  closeModal('loginModal');
+}
+
+// ═══════════════════════════════════════════════
+// REPORT ERROR
+// ═══════════════════════════════════════════════
+function triggerReport() {
+  document.getElementById('reportQText').value = currentQText || 'No question active';
+  openModal('reportModal');
+}
+
+function submitReport() {
+  const qText = document.getElementById('reportQText').value;
+  const type = document.getElementById('reportType').value;
+  const details = document.getElementById('reportDetails').value;
+  const subject = encodeURIComponent('MOrth Buddy Error Report');
+  const body = encodeURIComponent(`Error Report — MOrth Buddy\n\nQuestion: ${qText}\nError Type: ${type}\nDetails: ${details}\n\nThank you for helping improve MOrth Buddy!`);
+  window.open(`mailto:kubavatajay@gmail.com?subject=${subject}&body=${body}`);
+  closeModal('reportModal');
+  document.getElementById('reportDetails').value = '';
+}
+
+// ═══════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════
+init();
 </script>
 </body>
 </html>
