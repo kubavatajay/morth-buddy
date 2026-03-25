@@ -56,9 +56,8 @@ body{
   margin:0 auto; padding:24px 20px;
 }
 @media(max-width:1200px){
-  .app-layout{grid-template-columns:1fr;}
+  .app-layout{grid-template-columns:1fr; padding-bottom:80px;}
   .sidebar-left,.sidebar-right{display:none!important;}
-  .floating-bar{display:flex!important;}
 }
 @media(max-width:600px){
   .header .logo-text p,.logo-text .builder{display:none;}
@@ -307,6 +306,25 @@ body{
 }
 .floating-bar .community-btn{margin-bottom:0;font-size:12px;padding:9px 14px;}
 
+/* ── MOBILE NAV BAR ── */
+.mobile-nav-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(7,17,26,0.97);backdrop-filter:blur(20px);
+  border-top:1px solid var(--glass-border);
+  display:none;z-index:150;
+  justify-content:space-around;align-items:center;
+  padding:6px 0;
+}
+@media(max-width:1200px){.mobile-nav-bar{display:flex;}}
+.mob-nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 12px;border-radius:10px;cursor:pointer;
+  font-size:11px;color:rgba(255,255,255,0.55);transition:all 0.2s;
+  border:none;background:none;
+}
+.mob-nav-item i{font-size:16px;}
+.mob-nav-item.active,.mob-nav-item:hover{color:var(--accent);}
+
 /* ── FOOTER ── */
 footer{
   text-align:center;padding:24px 20px;
@@ -490,11 +508,13 @@ footer strong{color:rgba(255,255,255,0.55);}
   </aside>
 </div>
 
-<!-- FLOATING MOBILE BAR -->
-<div class="floating-bar" id="floatingBar">
-  <a href="https://chat.whatsapp.com/JdJbzUIiVPlE2aEQI7Z2qd" target="_blank" class="community-btn whatsapp"><i class="fab fa-whatsapp"></i> AI Ortho</a>
-  <a href="https://chat.whatsapp.com/BmlKwHA9xpi9i50iCM6yid" target="_blank" class="community-btn whatsapp"><i class="fab fa-whatsapp"></i> MOrth Group</a>
-  <a href="https://www.linkedin.com/in/dr-ajay-kubavat-708205210" target="_blank" class="community-btn linkedin"><i class="fab fa-linkedin"></i> LinkedIn</a>
+<!-- MOBILE NAV BAR (sections) -->
+<div class="mobile-nav-bar" id="mobileNavBar">
+  <div class="mob-nav-item active" id="mnav-mcq" onclick="switchSection('mcq');setMobNav('mcq')"><i class="fas fa-brain"></i><span>MCQ</span></div>
+  <div class="mob-nav-item" id="mnav-cases" onclick="switchSection('cases');setMobNav('cases')"><i class="fas fa-stethoscope"></i><span>Cases</span></div>
+  <div class="mob-nav-item" id="mnav-ceph" onclick="switchSection('ceph');setMobNav('ceph')"><i class="fas fa-ruler-combined"></i><span>Ceph</span></div>
+  <div class="mob-nav-item" id="mnav-refs" onclick="switchSection('refs');setMobNav('refs')"><i class="fas fa-book-open"></i><span>References</span></div>
+  <a href="https://chat.whatsapp.com/JdJbzUIiVPlE2aEQI7Z2qd" target="_blank" class="mob-nav-item" style="text-decoration:none;color:#25d366;"><i class="fab fa-whatsapp"></i><span>Community</span></a>
 </div>
 
 <!-- REGISTER MODAL -->
@@ -837,11 +857,11 @@ function loadQ() {
   const grid = document.getElementById('optionsGrid');
   grid.innerHTML = '';
   const letters = ['A','B','C','D'];
-  q.options.forEach((opt, i) => {
+  q.o.forEach((opt, i) => {
     const btn = document.createElement('button');
     btn.className = 'option-btn';
     btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
-    btn.onclick = () => selectAnswer(i, q.correct, q.e, btn);
+    btn.onclick = () => selectAnswer(i, q.c, q.e, btn);
     grid.appendChild(btn);
   });
 }
@@ -1034,6 +1054,15 @@ function submitReport() {
   window.open(`mailto:kubavatajay@gmail.com?subject=${subject}&body=${body}`);
   closeModal('reportModal');
   document.getElementById('reportDetails').value = '';
+}
+
+// ═══════════════════════════════════════════════
+// MOBILE NAV
+// ═══════════════════════════════════════════════
+function setMobNav(id) {
+  document.querySelectorAll('.mob-nav-item').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('mnav-' + id);
+  if (el) el.classList.add('active');
 }
 
 // ═══════════════════════════════════════════════
